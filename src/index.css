@@ -1,0 +1,53 @@
+:root {
+  background-color:#F8FAFC;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: #212529;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Importante para o padding não quebrar o layout */
+}
+
+aside {
+    background-color: rgba(255, 255, 255, 0.05); /* Branco quase transparente */
+    padding: 2rem;
+    width: 300px;
+    height: 100vh; /* Ocupa a altura toda da tela */
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px); /* Efeito de vidro embaçado */
+}
+
+aside h1 {
+    font-size: 1.5rem;
+    margin-bottom: 2.5rem;
+    color: #00d2ff; 
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.lista-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style-type: none;
+}
+
+.lista-sidebar li a {
+    text-decoration: none;
+    color: #212529;
+    display: block;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+/* Efeito ao passar o mouse */
+.lista-sidebar li a:hover {
+    background-color: rgba(0, 210, 255, 0.1); /* Fundo azul bem suave */
+    color: #212529;
+    border: 1px solid rgba(0, 210, 255, 0.3);
+    padding-left: 25px; /* Efeito de deslocamento */
+}
