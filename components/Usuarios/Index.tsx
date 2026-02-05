@@ -16,7 +16,7 @@ export default function Usuarios() {
 
     // 1. BUSCAR USUÁRIOS (GET)
     useEffect(() => {
-        api.get('/usuarios')
+        api.get('/user')
             .then(response => setUsuarios(response.data))
             .catch(err => console.error("Erro ao buscar usuários:", err));
     }, []);
@@ -27,7 +27,7 @@ export default function Usuarios() {
         if (!nome || !funcao) return;
 
         try {
-            const response = await api.post('/usuarios', { nome, funcao });
+            const response = await api.post('/user', { nome, funcao });
             // Atualiza a lista com o que voltou do banco (que já tem o ID real)
             setUsuarios([...usuarios, response.data]); 
             setNome("");
@@ -41,7 +41,7 @@ export default function Usuarios() {
     // 3. EXCLUIR USUÁRIO (DELETE)
     const handleDelete = async (id: number) => {
         try {
-            await api.delete(`/usuarios/${id}`);
+            await api.delete(`/user/${id}`);
             setUsuarios(usuarios.filter(user => user.id !== id));
         } catch (err) {
             alert("Erro ao excluir.");
