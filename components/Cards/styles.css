@@ -1,0 +1,83 @@
+.card {
+  display: flex;              /* Ativa o modo linha */
+  flex-direction: row;        /* Garante que fiquem lado a lado */
+  justify-content: center;    /* Centraliza a fila no meio da tela */
+  align-items: center;        /* Alinha verticalmente se um card for maior que o outro */
+  gap: 16px;                  /* Espaço entre os cards */
+  height: 100px;
+  width: 100%;
+  max-width: 1200px;          /* Trava a largura máxima para ficar bonito */
+  margin: 100px auto ;          /* Centraliza o bloco na página e dá respiro */
+  padding: 0 100px;
+  /* Permite quebrar linha se a tela for muito pequena (celular) */
+  flex-wrap: wrap; 
+  font-family: 'Inter', sans-serif;
+}
+
+/* --- ESTILO DE CADA CARD INDIVIDUAL --- */
+.card__Total,
+.card__NaFila,
+.card__Finalizado,
+.card__Divergencia {
+  /* Tamanho e Forma */
+  flex: 1;                    /* Faz todos crescerem por igual */
+  min-width: 220px;           /* Tamanho mínimo para não esmagar o conteúdo */
+  height: 150px;               /* Altura fixa (deitado) */
+  background: #ffff;
+  border-radius: 12px;
+  
+  /* Layout Interno (Texto Esq | Número Dir) */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;            /* Espaçamento interno lateral */
+  
+  /* Visual (Sombras e Bordas) */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 2px solid #e2e8f0;
+  border-left-width: 6px;     /* A faixa colorida na esquerda */
+  transition: transform 0.2s ease;
+}
+
+/* Efeito Hover */
+.card > div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* --- TEXTOS E NÚMEROS --- */
+
+/* Título (ex: TOTAL) */
+.conteudo__texto h1 {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 550;
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+/* Número (ex: 42) */
+.kpi-valor {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* --- CORES ESPECÍFICAS (Identidade Liv Up) --- */
+
+/* Total: Azul */
+.card__Total { border-left-color: #070742; }
+.card__Total .kpi-valor { color: #070742; }
+
+/* Na Fila: Amarelo */
+.card__NaFila { border-left-color: #f59e0b; }
+.card__NaFila .kpi-valor { color: #f59e0b; }
+
+/* Finalizados: Verde */
+.card__Finalizado { border-left-color: #74FF00; }
+.card__Finalizado .kpi-valor { color: #16a34a; } /* Verde texto um pouco mais escuro pra ler */
+
+/* Divergências: Rosa */
+.card__Divergencia { border-left-color: #d9224a; }
+.card__Divergencia .kpi-valor { color: #d9224a; }

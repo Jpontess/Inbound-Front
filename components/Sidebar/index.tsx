@@ -1,17 +1,30 @@
 import "./styles.css"
+import Logo from  "./assets/livUpLogo.png"
 
 export default function SideBar()
 {
     return(
         <aside>
-            <h1>Menu</h1>
+            <div>
+                <img src={Logo} alt="Logo da Liv Up" />
+            </div>
+            <h1>Gestão Logístico</h1>
             <nav> 
                 <ul className="lista-sidebar">
                     <li>
-                        <a href="#">Usuários</a>
+                        <a href="/home">Página de início</a>
                     </li>
                     <li>
-                        <a href="#">Fornecedores</a>
+                        <a href="/receipt">Recebimento</a>
+                    </li>
+                    <li>
+                        <a href="/schedule">Agendamento</a>
+                    </li>
+                    <li>
+                        <a href="/users">Usuário</a>
+                    </li>
+                    <li>
+                        <a href="/supplier">Fornecedores</a>
                     </li>
                 </ul>
             </nav>

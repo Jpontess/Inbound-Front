@@ -2,8 +2,7 @@
 aside {
     background-color:#1E293B;
     padding: 2rem 1.5rem;
-    width: 300px;
-    
+    width: 300px;    
     /* Mágica para fixar */
     position: fixed;    /* Fixa o elemento na tela */
     top: 0;             /* Gruda no topo */
@@ -26,9 +25,9 @@ aside h1 {
     font-family: sans-serif;
     font-size: 1.2rem;
     color: #ffffff;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     padding-left: 0.5rem;
-    border-left: 4px solid #3498db; /* Detalhe azul na lateral */
+    border-left: 4px solid #d9224a; /* Detalhe azul na lateral */
 }
 
 /* Lista de Navegação */
@@ -55,7 +54,14 @@ aside h1 {
 
 /* Efeito ao passar o mouse */
 .lista-sidebar li a:hover {
-    background-color: #6610F2;
+    background-color: #d9224a;
     color: #ffffff;
     transform: translateX(5px); /* Move levemente para a direita */
+}
+img{
+   width: 45%;
+   transform: translateX(30px);
+   border-radius: 30%;
+   margin-inline-start: 30px;
+   margin-bottom: 13%;
 }
