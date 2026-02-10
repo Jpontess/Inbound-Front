@@ -1,0 +1,261 @@
+/* --- FUNDO DO MODAL (Overlay) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.6); /* Azul escuro semi-transparente */
+    backdrop-filter: blur(4px); /* Efeito de vidro embaçado moderno */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; /* Fica em cima de tudo */
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* --- A CAIXA BRANCA (Content) --- */
+.modal-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 480px; /* Tamanho ideal para formulários pequenos */
+    border-radius: 12px; /* Cantos arredondados */
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+        0 10px 10px -5px rgba(0, 0, 0, 0.04); /* Sombra dupla suave */
+    overflow: hidden; /* Para o cabeçalho não sair das bordas */
+    border: 1px solid #e2e8f0;
+    transform: scale(0.95);
+    animation: popUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* --- ANIMAÇÕES --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes popUp {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* --- CABEÇALHO --- */
+.modal-header {
+    background-color: #f8fafc;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #94a3b8;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 0 4px;
+    transition: all 0.2s;
+}
+
+.btn-close:hover {
+    color: #ef4444;
+    background-color: #fee2e2;
+}
+
+/* --- CORPO DO TEXTO / FORMS --- */
+.modal-body {
+    padding: 24px;
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Estilo para Inputs dentro do Modal */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #334155;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box; /* Importante para não quebrar a largura */
+}
+
+.form-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* --- RODAPÉ (BOTÕES) --- */
+.modal-footer {
+    padding: 16px 24px;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end; /* Joga os botões para a direita */
+    gap: 12px;
+}
+
+/* Botões Genéricos do Modal */
+.btn-modal {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+/* Botão Cancelar (Cinza) */
+.btn-secondary {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.btn-secondary:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
+}
+
+/* Botão Confirmar (Azul) */
+.btn-confirm {
+    background-color: #2563eb;
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-confirm:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+/* Botão Perigo/Deletar (Vermelho) */
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+
+/* --- ESTILOS DO MODAL DE DETALHES --- */
+
+/* Labels (Títulos pequenos cinzas) */
+.detail-group label,
+.detail-item .label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* Valores (Textos pretos) */
+.value-lg { font-size: 1.1rem; font-weight: 700; color: #1e293b; }
+.value-md { font-size: 1rem; font-weight: 600; color: #334155; }
+.value { font-size: 0.95rem; font-weight: 500; color: #334155; }
+
+/* Grids de Layout */
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.details-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.details-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    background-color: #f8fafc;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+}
+
+/* Divisores e Títulos */
+.divider {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin: 20px 0;
+}
+
+.section-title {
+    margin: 0 0 12px 0;
+    font-size: 0.9rem;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+/* --- CARDS DE KPIs (Tempos) --- */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+}
+
+.kpi-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.kpi-label {
+    display: block;
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.kpi-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace; /* Fonte monoespaçada para números */
+}
+
+/* Cores para os tempos */
+.text-orange { color: #f59e0b; }
+.text-blue { color: #2563eb; }
+.text-dark { color: #0f172a; }

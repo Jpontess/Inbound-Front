@@ -1,7 +1,6 @@
 /* Container Principal: AGORA É GRID */
 .toolbar-container {
-    display: grid; /* Mudança chave aqui */
-    /* Cria 3 colunas: LadoEsq(flexível) | Meio(até 600px) | LadoDir(flexível) */
+    display: grid; 
     grid-template-columns: 1fr minmax(auto, 600px) 1fr;
     gap: 20px;
     align-items: center;

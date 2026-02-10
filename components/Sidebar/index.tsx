@@ -1,5 +1,5 @@
 import "./styles.css"
-import Logo from  "./assets/livUpLogo.png"
+import Logo from  "./assets/livup.png"
 
 export default function SideBar()
 {

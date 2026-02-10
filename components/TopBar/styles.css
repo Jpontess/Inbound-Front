@@ -16,6 +16,18 @@
     box-shadow: 1 2px 10px rgba(0, 0, 0, 0.10);
     z-index: 1000; /* Garante que fique em cima de tudo */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    .topbar {
+    /* Em vez de fixed/absolute */
+    position: sticky; 
+    top: 0;
+    z-index: 1000; /* Garante que fique por cima ao rolar */
+    
+    /* Resto do estilo */
+    height: 70px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 }
 
 /* LADO ESQUERDO */

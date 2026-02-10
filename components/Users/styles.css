@@ -1,125 +1,144 @@
-/* Container principal - Respeita a Sidebar fixa */
-.content {
-    margin-left: 300px; /* Ajuste se sua sidebar tiver largura diferente */
-    padding: 3rem;
+/* --- ESTILOS PARA PÁGINAS CRUD (Usuários e Fornecedores) --- */
+
+.crud-page {
+    width: 100%; 
     min-height: 100vh;
-    color: #212529;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-/* Título da Página */
-.content-header h1 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-    color: #212529;
-    text-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
-}
-
-/* Container do Formulário */
-.form-container {
     display: flex;
-    gap: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 1.5rem;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 3rem;
+    justify-content: center;     
+    padding: 100px 20px 40px 30px; 
+    background-color: transparent;
+    box-sizing: border-box;
+}
+
+.crud-container {
+    width: 100%;
+    max-width: 1200px; 
+}
+
+.crud-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 30px;
 }
 
-/* Estilo dos Inputs */
-.input-field {
-    flex: 1;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    color: #212529;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+.crud-header h2 {
+    font-size: 1.8rem;
+    color: #1e293b;
+    margin: 0;
 }
 
-.input-field:focus {
-    outline: none;
-    border-color: #00d2ff;
-    background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 8px rgba(0, 210, 255, 0.3);
-}
-
-/* Botão Adicionar */
 .btn-add {
-    background: #00d2ff;
-    color: #212529;
-    border: none;
-    padding: 0.8rem 2rem;
+    background-color: #0f172a;
+    color: white;
+    padding: 10px 20px;
     border-radius: 8px;
-    font-weight: bold;
+    border: none;
+    font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, background 0.3s;
+    transition: background 0.2s;
 }
 
-.btn-add:hover {
-    background: #00b8e6;
-    transform: translateY(-2px);
-}
+.btn-add:hover { background-color: #334155; }
 
-/* Tabela de Usuários */
-.table-container {
-    background: rgba(255, 255, 255, 0.02);
+/* Tabela em Card */
+.crud-card {
+    background: white;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    overflow: hidden; /* Garante o border-radius nas bordas */
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    overflow: hidden; /* Para as bordas da tabela */
 }
 
-table {
+.crud-table {
     width: 100%;
     border-collapse: collapse;
+}
+
+.crud-table th {
+    background-color: #f8fafc;
     text-align: left;
-}
-
-th {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 1rem;
-    font-size: 0.85rem;
+    padding: 16px 24px;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #212529;
+    color: #64748b;
+    font-weight: 700;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-td {
-    padding: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    color: #212529;
+.crud-table td {
+    padding: 16px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    font-size: 0.95rem;
 }
 
-tr:last-child td {
-    border-bottom: none;
-}
+.crud-table tr:last-child td { border-bottom: none; }
+.crud-table tr:hover { background-color: #fcfcfc; }
 
-tr:hover {
-    background: rgba(255, 255, 255, 0.03);
-}
-
-/* Botão de Ação (Editar/Excluir) */
-.btn-edit {
-    background: transparent;
-    border: 1px solid #00d2ff;
-    color: #00d2ff;
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
+/* Ações da Tabela */
+.action-btn {
+    background: none;
+    border: none;
     cursor: pointer;
-    font-size: 0.8rem;
-    transition: all 0.3s;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    padding: 6px;
+    border-radius: 4px;
+    transition: all 0.2s;
 }
 
-.btn-edit:hover {
-    background: #00d2ff;
-    color: #1a1a1a;
+.edit-btn { color: #3b82f6; }
+.edit-btn:hover { background-color: #eff6ff; }
+
+.delete-btn { color: #ef4444; }
+.delete-btn:hover { background-color: #fef2f2; }
+
+/* Badges de Status */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.status-active { background-color: #dcfce7; color: #166534; }
+.status-inactive { background-color: #f1f5f9; color: #64748b; }
+
+/* --- PÁGINA NÃO AUTORIZADO --- */
+.unauthorized-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+    text-align: center;
 }
 
-/* Animação suave ao carregar */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.lock-icon {
+    font-size: 4rem;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+
+.unauthorized-title {
+    font-size: 2rem;
+    color: #1e293b;
+    margin: 0 0 10px 0;
+}
+
+.unauthorized-text {
+    color: #64748b;
+    margin-bottom: 30px;
+    max-width: 400px;
+}
+
+.btn-back {
+    padding: 12px 24px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
 }

@@ -1,0 +1,158 @@
+/* Container da Página */
+.scheduling-page {
+    width: 100%;
+    min-height: calc(100vh - 80px); /* Ajuste da Topbar */
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: transparent; /* Pega o fundo do App */
+    box-sizing: border-box;
+}
+
+.scheduling-container {
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* Cabeçalho */
+.scheduling-header {
+    margin-bottom: 30px;
+}
+.scheduling-header h2 { margin: 0; color: #1e293b; font-size: 1.8rem; }
+.scheduling-header p { margin: 5px 0 0 0; color: #64748b; }
+
+/* Grid Lado a Lado */
+.scheduling-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px; /* Lista Flexível | Form Fixo */
+    gap: 40px;
+    align-items: start; /* Importante para o Sticky funcionar */
+}
+
+/* --- LISTA (ESQUERDA) --- */
+.section-title {
+    font-size: 0.9rem;
+    color: #64748b;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.cards-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.empty-state {
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px dashed #cbd5e1;
+    color: #94a3b8;
+}
+
+/* O Card do Agendamento */
+.schedule-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.schedule-card:hover {
+    transform: translateX(4px);
+    border-color: #cbd5e1;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+}
+
+/* Data Quadrada */
+.date-badge {
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+    border: 1px solid #e2e8f0;
+}
+
+.date-badge .day { font-size: 1.4rem; font-weight: 800; color: #1e293b; line-height: 1; }
+.date-badge .month { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+
+/* Informações Centrais */
+.info-col { flex: 1; }
+.info-col h4 { margin: 0 0 4px 0; font-size: 1rem; color: #1e293b; }
+
+.meta-info { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #64748b; }
+.weekday { text-transform: capitalize; }
+.separator { color: #cbd5e1; }
+
+.time-badge {
+    display: flex; align-items: center; gap: 4px;
+    background: #f8fafc; padding: 2px 8px; border-radius: 4px; border: 1px solid #e2e8f0;
+    font-weight: 600; color: #475569;
+}
+
+/* Status Pill */
+.status-pill {
+    padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; margin-right: 15px;
+}
+.status-agendado { background: #e0f2fe; color: #0284c7; }
+.status-confirmado { background: #dcfce7; color: #166534; }
+.status-pendente { background: #fef3c7; color: #d97706; }
+
+/* Botão Remover */
+.btn-remove-icon {
+    background: transparent; border: none; color: #cbd5e1;
+    cursor: pointer; padding: 5px; border-radius: 6px; display: flex;
+    transition: all 0.2s;
+}
+.btn-remove-icon:hover { background: #fef2f2; color: #ef4444; }
+
+/* --- FORMULÁRIO (DIREITA) --- */
+.form-card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    
+    position: sticky;
+    top: 30px;
+}
+
+.form-card h3 { margin: 0 0 5px 0; color: #1e293b; }
+.form-card p { margin: 0 0 20px 0; color: #64748b; font-size: 0.9rem; }
+
+.input-group { margin-bottom: 15px; }
+.input-group label { display: block; font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px; }
+
+.custom-input {
+    width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1;
+    font-size: 0.95rem; background: #f8fafc; box-sizing: border-box;
+}
+.custom-input:focus { outline: none; border-color: #2563eb; background: white; }
+
+.btn-submit {
+    width: 100%; padding: 12px; background: #0f172a; color: white;
+    border: none; border-radius: 8px; font-weight: 600; cursor: pointer;
+    margin-top: 10px; transition: background 0.2s;
+}
+.btn-submit:hover { background: #334155; }
+
+/* Mobile */
+@media (max-width: 850px) {
+    .scheduling-grid { grid-template-columns: 1fr; display: flex; flex-direction: column-reverse; }
+    .form-card { position: static; margin-bottom: 30px; }
+}
