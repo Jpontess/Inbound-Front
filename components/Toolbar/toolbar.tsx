@@ -1,49 +1,48 @@
-import './styles.css';
+import "./styles.css"; // Certifique-se que o CSS novo da toolbar está aqui ou global
 
-export default function Toolbar() {
-    
-    const handleExportar = () => alert("Exportando...");
-    const handleNovoRegistro = () => alert("Novo registro...");
+// Criamos uma interface para definir o que a Toolbar recebe do Pai (Home)
+interface ToolbarProps {
+    busca: string;
+    setBusca: (valor: string) => void;
+    data: string;
+    setData: (valor: string) => void;
+}
 
+export default function Toolbar({ busca, setBusca, data, setData }: ToolbarProps) {
     return (
-        <div className="toolbar-container">
-            <div className="toolbar-left">
-                <div className="date-box">
-                    <input type="date" className="date-input" />
+        <div className="toolbar-header">
+            
+            {/* Lado Esquerdo: Filtros */}
+            <div className="filter-group">
+                <div className="input-wrapper">
+                    {/* Ícone Lupa */}
+                    <svg className="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    
+                    <input 
+                        type="text" 
+                        placeholder="Buscar Fornecedor, NF..." 
+                        className="search-input"
+                        value={busca}
+                        onChange={(e) => setBusca(e.target.value)} // Avisa a Home que mudou
+                    />
                 </div>
+                
+                <input 
+                    type="date" 
+                    className="date-input"
+                    value={data}
+                    onChange={(e) => setData(e.target.value)} // Avisa a Home que mudou
+                />
             </div>
 
-            {/* 2. CENTRO: Busca (Vai ficar no meio e esticar) */}
-            <div className="toolbar-center">
-                <div className="search-box">
-                    <svg className="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input type="text" placeholder="Buscar placa, fornecedor ou nota..." />
-                </div>
-            </div>
-
-            {/* 3. DIREITA: Botões de Ação */}
-            <div className="toolbar-right">
-                <button className="btn btn-excel" onClick={handleExportar} title="Exportar para Excel">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    <span className="btn-text">Excel</span>
+            {/* Lado Direito: Botões */}
+            <div className="action-group">
+                <button className="btn-outline" title="Exportar Excel">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Exportar
                 </button>
-
-                <button className="btn btn-primary" onClick={handleNovoRegistro}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="16"></line>
-                        <line x1="8" y1="12" x2="16" y2="12"></line>
-                    </svg>
-                    <span>Registrar</span>
+                <button className="btn-outline" title="Atualizar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                 </button>
             </div>
 

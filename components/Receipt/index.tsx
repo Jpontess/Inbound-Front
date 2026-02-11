@@ -1,23 +1,51 @@
 import { useState } from "react";
 import "./styles.css"
 
+// Interface do Objeto que será enviado ao Backend
 interface NovoRecebimentoForm {
-    fornecedor: string;
-    placa?: string;
-    notaFiscal?: string;
-    qtdVolumes?: string;
-    dataPrevista?: string;
+    fornecedorId: string; // Mudamos para ID (mais correto p/ backend) ou mantenha nome se preferir
+    fornecedorNome: string; 
+    placa: string;
+    notaFiscal: string;
+    qtdVolumes: string;
+    dataPrevista: string;
 }
 
 interface NewReceiptProps {
     onSalvar: (dados: NovoRecebimentoForm) => void;
 }
 
+// Simulando dados que viriam da API (/api/fornecedores)
+const FORNECEDORES_MOCK = [
+    { id: 1, nome: "Nestlé Brasil Ltda" },
+    { id: 2, nome: "Klabin S.A." },
+    { id: 3, nome: "Ambev S.A." },
+    { id: 4, nome: "Coca-Cola FEMSA" },
+    { id: 5, nome: "M Dias Branco" }
+];
+
 export default function NewReceipt({ onSalvar }: NewReceiptProps) {
     
     const [form, setForm] = useState<NovoRecebimentoForm>({
-        fornecedor: "", placa: "", notaFiscal: "", qtdVolumes: "",  dataPrevista: ""
+        fornecedorId: "", 
+        fornecedorNome: "",
+        placa: "", 
+        notaFiscal: "", 
+        qtdVolumes: "",  
+        dataPrevista: ""
     });
+
+    // Função específica para o Select de Fornecedor
+    const handleFornecedorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const idSelecionado = e.target.value;
+        const fornecedorEncontrado = FORNECEDORES_MOCK.find(f => f.id.toString() === idSelecionado);
+        
+        setForm(prev => ({ 
+            ...prev, 
+            fornecedorId: idSelecionado,
+            fornecedorNome: fornecedorEncontrado ? fornecedorEncontrado.nome : ""
+        }));
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -26,6 +54,11 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // Validação simples
+        if (!form.fornecedorId) {
+            alert("Selecione um fornecedor da lista!");
+            return;
+        }
         onSalvar(form);
     };
 
@@ -33,7 +66,6 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
         <div className="receipt-container">
             
             <div className="receipt-card">
-                {/* Cabeçalho dentro do card */}
                 <div className="receipt-header">
                     <h2 className="receipt-title">Novo Recebimento</h2>
                     <p className="receipt-subtitle">Preencha os dados da carga e transporte</p>
@@ -42,17 +74,27 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
                 <form onSubmit={handleSubmit}>
                     
                     {/* SEÇÃO 1 */}
-                    <h4 style={{marginBottom: 15, color: '#d9224a', fontSize: '0.9rem'}}>DADOS DO TRANSPORTE</h4>
+                    <h4 style={{marginBottom: 15, color: '#d9224a', fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.05em'}}>DADOS DO TRANSPORTE</h4>
                     <div className="receipt-grid">
+                        
+                        {/* MUDANÇA AQUI: Select em vez de Input */}
                         <div className="input-group">
                             <label>Fornecedor *</label>
-                            <input 
-                                name="fornecedor" 
-                                className="receipt-input" 
-                                placeholder="Ex: Nestlé Brasil" 
+                            <select 
+                                name="fornecedorId" 
+                                className="receipt-input" // Reaproveita o estilo do input
                                 required 
-                                value={form.fornecedor} onChange={handleChange}
-                            />
+                                value={form.fornecedorId} 
+                                onChange={handleFornecedorChange}
+                                style={{backgroundColor: '#fff', cursor: 'pointer'}}
+                            >
+                                <option value="" disabled>Selecione um fornecedor...</option>
+                                {FORNECEDORES_MOCK.map((fornecedor) => (
+                                    <option key={fornecedor.id} value={fornecedor.id}>
+                                        {fornecedor.nome}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         
                         <div className="input-group">
@@ -68,39 +110,10 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
                             />
                         </div>
                     </div>
-
-                    <hr style={{border: 0, borderTop: '1px solid #f1f5f9', margin: '20px 0'}} />
-
-                    {/* SEÇÃO 2 */}
-                    <h4 style={{marginBottom: 15, color: '#d9224a', fontSize: '0.9rem'}}>DADOS DA CARGA</h4>
-                    <div className="receipt-grid">
-                        <div className="input-group">
-                            <label>Nota Fiscal *</label>
-                            <input 
-                                name="notaFiscal" 
-                                className="receipt-input" 
-                                placeholder="000.000.000-00" 
-                                type="number"
-                                required
-                                value={form.notaFiscal} onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Peso / Volumes (Kg)</label>
-                            <input 
-                                name="qtdVolumes" 
-                                className="receipt-input" 
-                                placeholder="Ex: 500"
-                                value={form.qtdVolumes} onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Botão de Ação */}
+                    <hr style={{border: 0, borderTop: '1px solid #f1f5f9', margin: '25px 0'}} />
                     <div className="receipt-actions">
                         <button type="submit" className="btn-save">
-                            SALVAR RECEBIMENTO
+                            Registrar entrada
                         </button>
                     </div>
 

@@ -1,153 +1,102 @@
-/* Container Principal: AGORA É GRID */
-.toolbar-container {
-    display: grid; 
-    grid-template-columns: 1fr minmax(auto, 600px) 1fr;
-    gap: 20px;
-    align-items: center;
-    
-    background-color: #ffffff;
-    padding: 12px 24px;
-    border-radius: 12px;
-    margin-bottom: 24px;
-}
+/* --- TOOLBAR DO DASHBOARD --- */
 
-/* --- REGRAS DE POSICIONAMENTO --- */
-
-/* 1. Lado Esquerdo (Data) -> Cola na esquerda */
-.toolbar-left {
-    justify-self: start; /* Comando do Grid para colar no início */
-    width: 100%;
-}
-
-/* 2. Meio (Busca) -> Cola no centro */
-.toolbar-center {
-    justify-self: center; /* Comando do Grid para colar no meio */
-    width: 100%;
+.toolbar-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    background-color: #ffffff;
+    gap: 20px;
+    flex-wrap: wrap; /* Garante responsividade */
 }
 
-/* 3. Lado Direito (Botões) -> Cola na direita */
-.toolbar-right {
-    justify-self: end; /* Comando do Grid para colar no fim */
+/* Grupo da Esquerda (Inputs) */
+.filter-group {
     display: flex;
     gap: 12px;
+    flex: 1;
+    min-width: 300px;
 }
 
-/* --- ESTILOS VISUAIS (Beleza) --- */
-
-/* Regra para deixar tudo na mesma altura (42px) */
-.date-box, 
-.search-box, 
-.btn {
-    height: 42px;
-    box-sizing: border-box;
+/* Input de Busca com Ícone */
+.input-wrapper {
+    position: relative;
+    flex: 2; /* Ocupa mais espaço que a data */
 }
 
-/* Estilo Data */
-.date-box {
-    background-color: #f1f5f9;
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 10px 10px 40px; /* Espaço para o ícone */
     border-radius: 8px;
-    padding: 0 12px;
-    display: inline-flex; /* Para não ocupar a largura toda da coluna */
-    align-items: center;
-    color: #64748b;
-    width: auto; /* Importante */
+    border: 1px solid #cbd5e1;
+    outline: none;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
 }
 
+.search-input:focus,
+.date-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Input de Data */
 .date-input {
-    border: none;
-    background: transparent;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
     outline: none;
-    color: #334155;
+    color: #475569;
     font-family: inherit;
     cursor: pointer;
 }
 
-/* Estilo Busca */
-.search-box {
-    width: 100%; /* Ocupa todo o espaço da coluna do meio */
+/* Grupo da Direita (Botões) */
+.action-group {
     display: flex;
-    align-items: center;
-    background-color: #f1f5f9;
-    border: 1px solid transparent;
-    padding: 0 16px;
-    border-radius: 8px;
-    transition: all 0.2s;
+    gap: 10px;
 }
 
-.search-box:focus-within {
-    background-color: #fff;
-    border-color: #d9224a;
-    box-shadow: 0 0 0 4px rgba(217, 34, 74, 0.1);
-}
-
-.search-box input {
-    border: none;
-    background: transparent;
-    outline: none;
-    width: 100%;
-    margin-left: 10px;
-    color: #334155;
-    font-size: 0.9rem;
-}
-
-.search-icon { color: #94a3b8; }
-
-/* Estilo Botões */
-.btn {
+.btn-outline {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 0 20px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.9rem;
-    white-space: nowrap; /* Garante que o texto não quebre */
-}
-
-.btn-excel {
-    background-color: #fff;
+    padding: 9px 16px;
+    background-color: white;
     border: 1px solid #e2e8f0;
-    color: #059669;
+    border-radius: 8px;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.btn-excel:hover {
-    background-color: #ecfdf5;
-    border-color: #059669;
+.btn-outline:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
 }
 
-.btn-primary {
-    background-color: #d9224a;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #be163b;
-    transform: translateY(-2px);
-}
-
-/* --- RESPONSIVIDADE (Celular) --- */
-@media (max-width: 900px) {
-    .toolbar-container {
-        display: flex; /* No celular volta a ser Flex pra empilhar */
-        flex-direction: column;
-        gap: 15px;
-        height: auto;
-    }
-    
-    .toolbar-center { order: -1; } /* Busca sobe */
-    
-    .toolbar-left, 
-    .toolbar-center, 
-    .toolbar-right,
-    .date-box,
-    .search-box {
-        width: 100%; /* Tudo ocupa 100% no celular */
-        justify-content: space-between;
-    }
-    
-    .btn { flex: 1; justify-content: center; }
+/* Badge de Placa (Estilo Logístico) */
+.plate-badge {
+    font-family: 'Consolas', 'Monaco', monospace; /* Fonte monoespaçada */
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
 }
