@@ -1,4 +1,6 @@
-/* --- FUNDO DO MODAL (Overlay) --- */
+/* =========================================
+   1. FUNDO E ESTRUTURA DO MODAL
+   ========================================= */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -6,30 +8,42 @@
     width: 100vw;
     height: 100vh;
     background-color: rgba(15, 23, 42, 0.6); /* Azul escuro semi-transparente */
-    backdrop-filter: blur(4px); /* Efeito de vidro embaçado moderno */
+    backdrop-filter: blur(4px); /* Efeito vidro */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999; /* Fica em cima de tudo */
+    z-index: 9999;
     animation: fadeIn 0.2s ease-out;
 }
 
-/* --- A CAIXA BRANCA (Content) --- */
 .modal-content {
     background: #ffffff;
     width: 90%;
-    max-width: 480px; /* Tamanho ideal para formulários pequenos */
-    border-radius: 12px; /* Cantos arredondados */
+    max-width: 550px; /* Aumentei um pouco para caber o Edit Admin */
+    border-radius: 12px;
     box-shadow: 
         0 20px 25px -5px rgba(0, 0, 0, 0.1), 
-        0 10px 10px -5px rgba(0, 0, 0, 0.04); /* Sombra dupla suave */
-    overflow: hidden; /* Para o cabeçalho não sair das bordas */
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
     border: 1px solid #e2e8f0;
-    transform: scale(0.95);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; /* Evita que o modal estoure a tela verticalmente */
     animation: popUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* --- ANIMAÇÕES --- */
+/* Permitir scroll apenas no corpo do modal se for muito grande */
+.modal-body {
+    padding: 24px;
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    overflow-y: auto; /* Scroll interno */
+}
+
+/* =========================================
+   2. ANIMAÇÕES
+   ========================================= */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -40,7 +54,9 @@
     to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* --- CABEÇALHO --- */
+/* =========================================
+   3. CABEÇALHO E RODAPÉ
+   ========================================= */
 .modal-header {
     background-color: #f8fafc;
     padding: 16px 24px;
@@ -48,6 +64,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0; /* Não deixa esmagar */
 }
 
 .modal-header h3 {
@@ -74,15 +91,19 @@
     background-color: #fee2e2;
 }
 
-/* --- CORPO DO TEXTO / FORMS --- */
-.modal-body {
-    padding: 24px;
-    color: #475569;
-    font-size: 0.95rem;
-    line-height: 1.5;
+.modal-footer {
+    padding: 16px 24px;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
-/* Estilo para Inputs dentro do Modal */
+/* =========================================
+   4. FORMULÁRIOS E INPUTS
+   ========================================= */
 .form-group {
     margin-bottom: 16px;
 }
@@ -95,7 +116,9 @@
     color: #334155;
 }
 
-.form-input {
+/* IMPORTANTE: Unifiquei form-input e receipt-input aqui */
+.receipt-input, 
+.form-input { 
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #cbd5e1;
@@ -103,25 +126,30 @@
     font-size: 0.95rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
-    box-sizing: border-box; /* Importante para não quebrar a largura */
+    box-sizing: border-box;
+    background-color: #fff;
 }
 
+.receipt-input:focus,
 .form-input:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-/* --- RODAPÉ (BOTÕES) --- */
-.modal-footer {
-    padding: 16px 24px;
-    background-color: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-    display: flex;
-    justify-content: flex-end; /* Joga os botões para a direita */
-    gap: 12px;
+.receipt-input:disabled {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
 }
 
-/* Botões Genéricos do Modal */
+textarea.receipt-input {
+    resize: vertical; /* Permite redimensionar só altura */
+    min-height: 80px;
+}
+
+/* =========================================
+   5. BOTÕES
+   ========================================= */
 .btn-modal {
     padding: 8px 16px;
     border-radius: 6px;
@@ -132,7 +160,6 @@
     transition: all 0.2s;
 }
 
-/* Botão Cancelar (Cinza) */
 .btn-secondary {
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
@@ -145,7 +172,6 @@
     border-color: #94a3b8;
 }
 
-/* Botão Confirmar (Azul) */
 .btn-confirm {
     background-color: #2563eb;
     color: white;
@@ -157,37 +183,103 @@
     transform: translateY(-1px);
 }
 
-/* Botão Perigo/Deletar (Vermelho) */
-.btn-danger {
-    background-color: #ef4444;
+.btn-save {
+    background-color: #10b981;
     color: white;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.btn-danger:hover {
-    background-color: #dc2626;
+.btn-save:hover {
+    background-color: #059669;
 }
 
+/* =========================================
+   6. AUTOCOMPLETE (LISTA FLUTUANTE)
+   ========================================= */
+.autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
-/* --- ESTILOS DO MODAL DE DETALHES --- */
+.autocomplete-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.9rem;
+    color: #334155;
+}
 
-/* Labels (Títulos pequenos cinzas) */
+.autocomplete-item:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+/* =========================================
+   7. BADGES (STATUS)
+   ========================================= */
+.badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-agendado { background-color: #3b82f6; color: white; }
+.badge-aguardando { background-color: #f59e0b; color: white; }
+.badge-conferindo { background-color: #8b5cf6; color: white; }
+.badge-finalizado { background-color: #10b981; color: white; }
+.badge-divergencia { background-color: #ef4444; color: white; }
+.badge-divengencia { background-color: #ef4444; color: white; } /* Typo support */
+
+.plate-badge {
+    background-color: #e2e8f0;
+    color: #475569;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: 700;
+    border: 1px solid #cbd5e1;
+}
+
+/* =========================================
+   8. DETALHES E LAYOUT (VISUALIZAR)
+   ========================================= */
 .detail-group label,
 .detail-item .label {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     color: #64748b;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 4px;
     letter-spacing: 0.5px;
 }
 
-/* Valores (Textos pretos) */
 .value-lg { font-size: 1.1rem; font-weight: 700; color: #1e293b; }
 .value-md { font-size: 1rem; font-weight: 600; color: #334155; }
 .value { font-size: 0.95rem; font-weight: 500; color: #334155; }
 
-/* Grids de Layout */
 .detail-row {
     display: flex;
     justify-content: space-between;
@@ -212,7 +304,6 @@
     border: 1px solid #f1f5f9;
 }
 
-/* Divisores e Títulos */
 .divider {
     border: 0;
     border-top: 1px solid #e2e8f0;
@@ -226,7 +317,7 @@
     font-weight: 700;
 }
 
-/* --- CARDS DE KPIs (Tempos) --- */
+/* KPIs */
 .kpi-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -239,7 +330,6 @@
     padding: 12px;
     border-radius: 8px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .kpi-label {
@@ -252,10 +342,9 @@
 .kpi-value {
     font-size: 1.1rem;
     font-weight: 700;
-    font-family: 'Courier New', monospace; /* Fonte monoespaçada para números */
+    font-family: 'Courier New', monospace;
 }
 
-/* Cores para os tempos */
 .text-orange { color: #f59e0b; }
 .text-blue { color: #2563eb; }
 .text-dark { color: #0f172a; }

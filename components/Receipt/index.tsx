@@ -1,102 +1,184 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react"; // Adicione useRef
 import "./styles.css"
 
-// Interface do Objeto que será enviado ao Backend
-interface NovoRecebimentoForm {
-    fornecedorId: string; // Mudamos para ID (mais correto p/ backend) ou mantenha nome se preferir
-    fornecedorNome: string; 
-    placa: string;
-    notaFiscal: string;
-    qtdVolumes: string;
-    dataPrevista: string;
-}
+// Imports do Backend (Mantenha igual)
+import { SupplierService } from "../../src/services/Supplier/supplierService";
+import { ReceiptService } from "../../src/services/Receipt/receiptService";
+import type { Supplier } from "../../src/interface/Supplier/supplier";
+import type { CreateReceiptDto } from "../../src/interface/Receipt/createReceiptDto"; 
 
 interface NewReceiptProps {
-    onSalvar: (dados: NovoRecebimentoForm) => void;
+    onSalvar: (dados: any) => void;
 }
-
-// Simulando dados que viriam da API (/api/fornecedores)
-const FORNECEDORES_MOCK = [
-    { id: 1, nome: "Nestlé Brasil Ltda" },
-    { id: 2, nome: "Klabin S.A." },
-    { id: 3, nome: "Ambev S.A." },
-    { id: 4, nome: "Coca-Cola FEMSA" },
-    { id: 5, nome: "M Dias Branco" }
-];
 
 export default function NewReceipt({ onSalvar }: NewReceiptProps) {
     
-    const [form, setForm] = useState<NovoRecebimentoForm>({
+    // 1. Dados da API
+    const [listaFornecedores, setListaFornecedores] = useState<Supplier[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // 2. Estado do Formulário
+    const [form, setForm] = useState({
         fornecedorId: "", 
-        fornecedorNome: "",
+        fornecedorNome: "", // Vamos usar isso para mostrar no input
         placa: "", 
         notaFiscal: "", 
         qtdVolumes: "",  
-        dataPrevista: ""
     });
 
-    // Função específica para o Select de Fornecedor
-    const handleFornecedorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const idSelecionado = e.target.value;
-        const fornecedorEncontrado = FORNECEDORES_MOCK.find(f => f.id.toString() === idSelecionado);
-        
+    // 3. ESTADOS NOVOS PARA O AUTOCOMPLETE
+    const [buscaFornecedor, setBuscaFornecedor] = useState(""); // O texto que o usuário digita
+    const [mostrarSugestoes, setMostrarSugestoes] = useState(false); // Abre/fecha a lista
+    const wrapperRef = useRef<HTMLDivElement>(null); // Para detectar clique fora
+
+    // Carregar dados (Igual ao anterior)
+    useEffect(() => {
+        const carregarDados = async () => {
+            try {
+                const data = await SupplierService.getAll();
+                setListaFornecedores(data);
+            } catch (error) {
+                console.error("Erro", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        carregarDados();
+    }, []);
+
+    // Fecha a lista se clicar fora do componente
+    useEffect(() => {
+        function handleClickOutside(event: any) {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+                setMostrarSugestoes(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [wrapperRef]);
+
+    // --- LÓGICA DO AUTOCOMPLETE ---
+
+    // Filtra a lista baseada no que foi digitado
+    const fornecedoresFiltrados = listaFornecedores.filter(f => 
+        f.nome.toLowerCase().includes(buscaFornecedor.toLowerCase())
+    );
+
+    // Quando o usuário clica em uma sugestão
+    const selecionarFornecedor = (fornecedor: Supplier) => {
         setForm(prev => ({ 
             ...prev, 
-            fornecedorId: idSelecionado,
-            fornecedorNome: fornecedorEncontrado ? fornecedorEncontrado.nome : ""
+            fornecedorId: fornecedor._id, 
+            fornecedorNome: fornecedor.nome 
         }));
+        setBuscaFornecedor(fornecedor.nome); // Preenche o input com o nome
+        setMostrarSugestoes(false); // Esconde a lista
+    };
+
+    // Quando o usuário digita
+    const handleBuscaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setBuscaFornecedor(e.target.value);
+        setMostrarSugestoes(true);
+        // Se ele apagar o texto, limpamos o ID selecionado
+        if (e.target.value === "") {
+            setForm(prev => ({ ...prev, fornecedorId: "" }));
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        setForm(prev => ({ 
+            ...prev, 
+            [name]: name === 'placa' ? value.toUpperCase() : value 
+        }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Validação simples
+        
+        // Validação extra: O usuário digitou mas não clicou em ninguém da lista?
         if (!form.fornecedorId) {
-            alert("Selecione um fornecedor da lista!");
+            alert("Por favor, selecione um fornecedor válido da lista.");
             return;
         }
-        onSalvar(form);
+
+        try {
+            const payload: CreateReceiptDto = {
+                fornecedor: form.fornecedorId,
+                placa: form.placa,
+                usuario: "698cfd69317e244aaf65cefa" 
+            };
+
+            await ReceiptService.create(payload);
+            
+            alert("Entrada registrada com sucesso!");
+            onSalvar(payload);
+
+            // Limpa tudo
+            setForm({
+                fornecedorId: "", fornecedorNome: "", placa: "", 
+                notaFiscal: "", qtdVolumes: ""
+            });
+            setBuscaFornecedor(""); // Limpa o input de busca
+
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao registrar entrada.");
+        }
     };
 
     return (
         <div className="receipt-container">
-            
             <div className="receipt-card">
                 <div className="receipt-header">
                     <h2 className="receipt-title">Novo Recebimento</h2>
-                    <p className="receipt-subtitle">Preencha os dados da carga e transporte</p>
+                    <p className="receipt-subtitle">Preencha os dados do veículo</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
+                    <h4 style={{marginBottom: 15, color: '#d9224a', fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.05em'}}>
+                        DADOS DO TRANSPORTE
+                    </h4>
                     
-                    {/* SEÇÃO 1 */}
-                    <h4 style={{marginBottom: 15, color: '#d9224a', fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.05em'}}>DADOS DO TRANSPORTE</h4>
                     <div className="receipt-grid">
                         
-                        {/* MUDANÇA AQUI: Select em vez de Input */}
-                        <div className="input-group">
+                        {/* --- AUTOCOMPLETE DE FORNECEDOR --- */}
+                        <div className="input-group" ref={wrapperRef} style={{position: 'relative'}}>
                             <label>Fornecedor *</label>
-                            <select 
-                                name="fornecedorId" 
-                                className="receipt-input" // Reaproveita o estilo do input
+                            <input 
+                                type="text"
+                                className="receipt-input"
+                                placeholder={isLoading ? "Carregando..." : "Digite para buscar..."}
+                                value={buscaFornecedor}
+                                onChange={handleBuscaChange}
+                                onFocus={() => setMostrarSugestoes(true)}
+                                disabled={isLoading}
                                 required 
-                                value={form.fornecedorId} 
-                                onChange={handleFornecedorChange}
-                                style={{backgroundColor: '#fff', cursor: 'pointer'}}
-                            >
-                                <option value="" disabled>Selecione um fornecedor...</option>
-                                {FORNECEDORES_MOCK.map((fornecedor) => (
-                                    <option key={fornecedor.id} value={fornecedor.id}>
-                                        {fornecedor.nome}
-                                    </option>
-                                ))}
-                            </select>
+                            />
+                            
+                            {/* LISTA FLUTUANTE DE SUGESTÕES */}
+                            {mostrarSugestoes && (
+                                <ul className="autocomplete-list">
+                                    {isLoading && <li className="autocomplete-item disabled">Carregando...</li>}
+                                    
+                                    {!isLoading && fornecedoresFiltrados.length === 0 && (
+                                        <li className="autocomplete-item disabled">Nenhum fornecedor encontrado</li>
+                                    )}
+
+                                    {fornecedoresFiltrados.map((fornecedor) => (
+                                        <li 
+                                            key={fornecedor._id} 
+                                            className="autocomplete-item"
+                                            onClick={() => selecionarFornecedor(fornecedor)}
+                                        >
+                                            {fornecedor.nome}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                         
+                        {/* INPUT PLACA */}
                         <div className="input-group">
                             <label>Placa do Veículo *</label>
                             <input 
@@ -110,13 +192,10 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
                             />
                         </div>
                     </div>
-                    <hr style={{border: 0, borderTop: '1px solid #f1f5f9', margin: '25px 0'}} />
+                    <hr style={{border: 0, borderTop: '1px solid #f1f5f9', margin: '8px 0'}} />
                     <div className="receipt-actions">
-                        <button type="submit" className="btn-save">
-                            Registrar entrada
-                        </button>
+                        <button type="submit" className="btn-save">Registrar entrada</button>
                     </div>
-
                 </form>
             </div>
         </div>

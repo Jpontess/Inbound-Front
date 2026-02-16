@@ -1,25 +1,50 @@
 import "./styles.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Kpis from "../Cards/kpis";
 // IMPORTANTE: Importe o seu Toolbar aqui
 import Toolbar from "../Toolbar/toolbar"; 
 import ActionButtons from "../Buttons/actionButtons";
 import ActionsModals from "../Modal/actionModals";
-import type { Modal, Recebimento } from "../../src/interface/recebimento";
+
+// Imports do Backend
+import { ReceiptService } from "../../src/services/Receipt/receiptService";
+import type { Receipt } from "../../src/interface/Receipt/receiptDto";
+// Usamos 'any' no tipo Modal para flexibilizar, ou importe seu tipo original
+import type { Modal } from "../../src/interface/recebimento"; 
 
 export default function Home() {
 
-    // Função para lidar com a ação de divergência vinda do botão
-
     const [modalAberto, setModalAberto] = useState<Modal>(null);
-    const [veiculoSelecionado, setVeiculoSelecionado] = useState<Recebimento | null>(null);
+    const [veiculoSelecionado, setVeiculoSelecionado] = useState<Receipt | null>(null);
     
     // Estados de Filtro (Ficam aqui na Home)
     const [busca, setBusca] = useState("");
     const [dataFiltro, setDataFiltro] = useState(""); 
 
+    // --- ESTADO DOS DADOS (SUBSTITUI O MOCK) ---
+    const [receipts, setReceipts] = useState<Receipt[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // --- 1. BUSCAR DADOS DO BACKEND ---
+    const loadData = async () => {
+        try {
+            setIsLoading(true);
+            const data = await ReceiptService.getAll();
+            setReceipts(data);
+        } catch (error) {
+            console.error("Erro ao buscar dados:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
     // --- FUNÇÕES MODAL ---
-    const handleOpenModal = (tipo: Modal, veiculo: Recebimento) => {
+    // Ajustei o tipo de 'veiculo' para any para aceitar o objeto do banco sem conflito de tipagem
+    const handleOpenModal = (tipo: Modal, veiculo: any) => {
         setVeiculoSelecionado(veiculo);
         setModalAberto(tipo);
     };
@@ -29,29 +54,57 @@ export default function Home() {
         setVeiculoSelecionado(null);
     };
 
-    const handleConfirmAction = () => {
-        console.log(`Ação ${modalAberto} confirmada para ID ${veiculoSelecionado?.id}`);
-        handleCloseModal();
+    // --- 2. AÇÕES CONECTADAS NA API ---
+    const handleConfirmAction = async (dadosForm?: any) => {
+        if (!veiculoSelecionado) return;
+
+        try {
+            // Lógica de INICIAR
+            if (modalAberto === 'iniciar') {
+                await ReceiptService.start(veiculoSelecionado._id, {
+                    notaFiscal: dadosForm.notaFiscal,
+                    pesoNota: Number(dadosForm.qtdVolumes) // Adaptando conforme seu form
+                });
+                alert("Iniciado com sucesso!");
+            }
+            // Lógica de FINALIZAR
+            else if (modalAberto === 'finalizar') {
+                await ReceiptService.finish(veiculoSelecionado._id, {
+                    pesoBalanca: Number(dadosForm.pesoContado),
+                    obs: dadosForm.observacao
+                });
+                alert("Finalizado com sucesso!");
+            }
+            // Lógica de DELETAR
+            else if (modalAberto === 'deletar') {
+                await ReceiptService.delete(veiculoSelecionado._id);
+                alert("Deletado com sucesso!");
+            }
+
+            // Atualiza a tabela e fecha o modal
+            loadData();
+            handleCloseModal();
+
+        } catch (error) {
+            console.error("Erro na ação:", error);
+            alert("Erro ao processar ação. Tente novamente.");
+        }
     };
 
-    // --- DADOS MOCKADOS ---
-    const filaVeiculos: any[] = [ 
-        { id: 1, nome: "Nestlé Brasil", nf: "102030", placa: "ABC-1234", chegada: "08:15", data: "2026-02-10", status: "Aguardando" },
-        { id: 2, nome: "Coca-Cola Fem.", nf: "550123", placa: "GHI-9090", chegada: "08:30", data: "2026-02-10", status: "Finalizado" },
-        { id: 3, nome: "Ambev S.A.", nf: "900201", placa: "DEF-5678", chegada: "08:45", data: "2026-02-11", status: "Conferindo" },
-        { id: 4, nome: "M Dias Branco", nf: "882100", placa: "JKL-3456", chegada: "12:00", data: "2026-02-10", status: "Agendado" },
-    ];
-
-    // --- LÓGICA DE FILTRO ---
-    const veiculosFiltrados = filaVeiculos.filter(v => {
-        const matchTexto = v.nome.toLowerCase().includes(busca.toLowerCase()) || v.nf.includes(busca);
-        const matchData = dataFiltro ? v.data === dataFiltro : true;
+    const veiculosFiltrados = receipts.filter(v => {
+        const nomeFornecedor = v.fornecedor?.nome || ""; 
+        const matchTexto = nomeFornecedor.toLowerCase().includes(busca.toLowerCase()) || 
+                           (v.notaFiscal || "").includes(busca) ||
+                           (v.placa || "").toLowerCase().includes(busca.toLowerCase());
+        const dataV = v.dataChegada ? v.dataChegada.substring(0, 10) : "";
+        const matchData = dataFiltro ? dataV === dataFiltro : true;
+        
         return matchTexto && matchData;
     });
 
     return (
         <div className="dashboard-container">
-            <Kpis/>
+            <Kpis dados={receipts}/>
             
             <div className="main-panel">
                 <section className="table-card">
@@ -76,7 +129,9 @@ export default function Home() {
                             </tr>
                         </thead>
                         <tbody>
-                            {veiculosFiltrados.length === 0 ? (
+                            {isLoading ? (
+                                <tr><td colSpan={6} style={{padding: 20, textAlign: 'center'}}>Carregando...</td></tr>
+                            ) : veiculosFiltrados.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} style={{textAlign: 'center', padding: '40px', color: '#94a3b8'}}>
                                         Nenhum registro encontrado.
@@ -84,23 +139,28 @@ export default function Home() {
                                 </tr>
                             ) : (
                                 veiculosFiltrados.map((v) => (
-                                    <tr key={v.id}>
+                                    <tr key={v._id}>
                                         <td>
                                             <span className={`badge badge-${v.status.toLowerCase()}`}>
                                                 {v.status}
                                             </span>
                                         </td>
-                                        <td className="fw-bold">{v.nome}</td>
-                                        <td>{v.nf || "-"}</td>
+                                        {/* Acessando nome dentro do objeto fornecedor */}
+                                        <td className="fw-bold">{v.fornecedor?.nome || "---"}</td>
+                                        <td>{v.notaFiscal || "-"}</td>
                                         <td>
                                             <span className="plate-badge">
                                                 {v.placa || "---"}
                                             </span>
                                         </td>
-                                        <td>{v.chegada || "--:--"}</td>
+                                        <td>
+                                            {v.dataChegada 
+                                                ? new Date(v.dataChegada).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
+                                                : "--:--"}
+                                        </td>
                                         <td style={{textAlign: "right"}}>
                                             <ActionButtons
-                                                veiculo={v} 
+                                                veiculo={v as any} // Cast para evitar erro de tipagem com interface antiga
                                                 onAction={handleOpenModal} 
                                             />
                                         </td>
@@ -115,7 +175,7 @@ export default function Home() {
             <ActionsModals
                 isOpen={!!modalAberto}
                 type={modalAberto}
-                veiculo={veiculoSelecionado}
+                veiculo={veiculoSelecionado as any}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmAction}
             />

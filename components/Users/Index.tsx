@@ -1,59 +1,93 @@
-import { useState } from "react";
-import "./styles.css"; // Importe seu CSS global
-
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    role: "Admin" | "Operador" | "Visualizador";
-    status: "Ativo" | "Inativo";
-}
+import { useState, useEffect } from "react";
+import "../../components/Home/styles.css"; 
+import { UserService} from "../../src/services/User/userServices"; 
+import { type User } from "../../src/interface/User/User";
+import { type UserDTO } from "../../src/interface/User/UserDto";
 
 export default function Users() {
-    const [users, setUsers] = useState<User[]>([
-        { id: 1, name: "João Silva", email: "joao@empresa.com", role: "Admin", status: "Ativo" },
-        { id: 2, name: "Maria Oliveira", email: "maria@empresa.com", role: "Operador", status: "Ativo" },
-        { id: 3, name: "Carlos Souza", email: "carlos@empresa.com", role: "Visualizador", status: "Inativo" },
-    ]);
-
-    // Estado do Modal
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingId, setEditingId] = useState<number | null>(null);
+    // --- ESTADOS ---
+    const [users, setUsers] = useState<User[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     
-    // Formulário
-    const [formData, setFormData] = useState<Partial<User>>({
-        name: "", email: "", role: "Operador", status: "Ativo"
+    // Modal e Edição (ID agora é string ou null)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    
+    // Formulário (Refletindo sua interface)
+    const [formData, setFormData] = useState<UserDTO>({
+        nome: "", 
+        email: "", 
+        funcao: "Operador", 
+        turno: "1º Turno"
     });
 
+    // --- CARREGAR DADOS ---
+    const fetchUsers = async () => {
+        try {
+            setIsLoading(true);
+            const data = await UserService.getAll();
+            setUsers(data);
+        } catch (error) {
+            console.error("Erro ao buscar usuários:", error);
+            alert("Erro ao carregar lista.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    // --- SALVAR (POST/PATCH) ---
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (editingId) {
+                // Editar (Passando string ID)
+                await UserService.update(editingId, formData);
+                alert("Usuário atualizado!");
+            } else {
+                // Criar
+                await UserService.create(formData);
+                alert("Usuário criado!");
+            }
+            setIsModalOpen(false);
+            fetchUsers(); 
+        } catch (error) {
+            console.error("Erro ao salvar:", error);
+            alert("Erro ao salvar usuário.");
+        }
+    };
+
+    // --- DELETAR ---
+    const handleDelete = async (id: string) => {
+        if (confirm("Tem certeza que deseja remover este usuário?")) {
+            try {
+                await UserService.delete(id);
+                setUsers(prev => prev.filter(u => u._id !== id));
+            } catch (error) {
+                console.error("Erro ao excluir:", error);
+                alert("Erro ao excluir usuário.");
+            }
+        }
+    };
+
+    // --- ABRIR MODAL ---
     const handleOpenModal = (user?: User) => {
         if (user) {
-            setEditingId(user.id);
-            setFormData(user);
+            setEditingId(user._id);
+            setFormData({
+                nome: user.nome,
+                email: user.email,
+                funcao: user.funcao,
+                turno: user.turno
+            });
         } else {
             setEditingId(null);
-            setFormData({ name: "", email: "", role: "Operador", status: "Ativo" });
+            setFormData({ nome: "", email: "", funcao: "Operador", turno: "1º Turno" });
         }
         setIsModalOpen(true);
-    };
-
-    const handleDelete = (id: number) => {
-        if (confirm("Tem certeza que deseja remover este usuário?")) {
-            setUsers(users.filter(u => u.id !== id));
-        }
-    };
-
-    const handleSave = (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        if (editingId) {
-            // Editar existente
-            setUsers(users.map(u => u.id === editingId ? { ...u, ...formData } as User : u));
-        } else {
-            // Criar novo
-            const newUser = { ...formData, id: Date.now() } as User;
-            setUsers([...users, newUser]);
-        }
-        setIsModalOpen(false);
     };
 
     return (
@@ -63,45 +97,78 @@ export default function Users() {
                 <div className="crud-header">
                     <div>
                         <h2>Gestão de Usuários</h2>
-                        <p style={{color: '#64748b', margin: 0}}>Controle de acesso e permissões.</p>
+                        <p style={{color: '#64748b', margin: 0}}>Controle de equipe e turnos.</p>
                     </div>
                     <button className="btn-add" onClick={() => handleOpenModal()}>+ Novo Usuário</button>
                 </div>
 
                 <div className="crud-card">
-                    <table className="crud-table">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Email</th>
-                                <th>Permissão</th>
-                                <th>Status</th>
-                                <th style={{textAlign: 'right'}}>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map(user => (
-                                <tr key={user.id}>
-                                    <td style={{fontWeight: 600}}>{user.name}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.role}</td>
-                                    <td>
-                                        <span className={`status-badge ${user.status === 'Ativo' ? 'status-active' : 'status-inactive'}`}>
-                                            {user.status}
-                                        </span>
-                                    </td>
-                                    <td style={{textAlign: 'right'}}>
-                                        <button className="action-btn edit-btn" onClick={() => handleOpenModal(user)}>Editar</button>
-                                        <button className="action-btn delete-btn" onClick={() => handleDelete(user.id)}>Excluir</button>
-                                    </td>
+                    {isLoading ? (
+                        <div style={{padding: '40px', textAlign: 'center', color: '#64748b'}}>
+                            Carregando equipe...
+                        </div>
+                    ) : (
+                        <table className="crud-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Função</th>
+                                    <th>Turno</th>
+                                    <th style={{textAlign: 'right'}}>Ações</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {users.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} style={{textAlign: 'center', padding: '20px', color: '#94a3b8'}}>
+                                            Nenhum usuário encontrado.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    users.map(user => (
+                                        <tr key={user._id}>
+                                            <td style={{fontWeight: 600}}>{user.nome}</td>
+                                            <td>{user.email}</td>
+                                            <td>
+                                                <span style={{
+                                                    backgroundColor: '#eff6ff', 
+                                                    color: '#3b82f6', 
+                                                    padding: '4px 8px', 
+                                                    borderRadius: '6px', 
+                                                    fontSize: '0.8rem', 
+                                                    fontWeight: 600
+                                                }}>
+                                                    {user.funcao}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span style={{
+                                                    backgroundColor: '#f1f5f9',
+                                                    color: '#475569',
+                                                    padding: '4px 8px',
+                                                    borderRadius: '6px',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: 600,
+                                                    border: '1px solid #e2e8f0'
+                                                }}>
+                                                    {user.turno}
+                                                </span>
+                                            </td>
+                                            <td style={{textAlign: 'right'}}>
+                                                <button className="action-btn edit-btn" onClick={() => handleOpenModal(user)}>Editar</button>
+                                                <button className="action-btn delete-btn" onClick={() => handleDelete(user._id)}>Excluir</button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
             </div>
 
-            {/* MODAL SIMPLES */}
+            {/* MODAL DE USUÁRIOS */}
             {isModalOpen && (
                 <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -111,28 +178,59 @@ export default function Users() {
                         </div>
                         <form onSubmit={handleSave}>
                             <div className="modal-body">
+                                
+                                {/* Campo NOME */}
                                 <div className="form-group">
                                     <label>Nome Completo</label>
-                                    <input className="form-input" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                                    <input 
+                                        className="form-input" 
+                                        required 
+                                        value={formData.nome} 
+                                        onChange={e => setFormData({...formData, nome: e.target.value})} 
+                                    />
                                 </div>
+                                
+                                {/* Campo EMAIL */}
                                 <div className="form-group">
-                                    <label>Email Corporativo</label>
-                                    <input type="email" className="form-input" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                                    <label>Email</label>
+                                    <input 
+                                        type="email" 
+                                        className="form-input" 
+                                        required 
+                                        value={formData.email} 
+                                        onChange={e => setFormData({...formData, email: e.target.value})} 
+                                    />
                                 </div>
+
                                 <div className="detail-row">
+                                    {/* Campo FUNÇÃO */}
                                     <div className="form-group" style={{flex: 1, marginRight: 10}}>
-                                        <label>Permissão</label>
-                                        <select className="form-input" value={formData.role} onChange={e => setFormData({...formData, role: e.target.value as any})}>
-                                            <option>Admin</option>
-                                            <option>Operador</option>
-                                            <option>Visualizador</option>
+                                        <label>Função</label>
+                                        <select 
+                                            className="form-input" 
+                                            value={formData.funcao} 
+                                            onChange={e => setFormData({...formData, funcao: e.target.value})}
+                                        >
+                                            <option value="Operador">Operador</option>
+                                            <option value="Líder">Líder</option>
+                                            <option value="Gerente">Gerente</option>
+                                            <option value="Conferente">Conferente</option>
+                                            <option value="Admin">Admin</option>
                                         </select>
                                     </div>
+                                    
+                                    {/* Campo TURNO */}
                                     <div className="form-group" style={{flex: 1}}>
-                                        <label>Status</label>
-                                        <select className="form-input" value={formData.status} onChange={e => setFormData({...formData, status: e.target.value as any})}>
-                                            <option>Ativo</option>
-                                            <option>Inativo</option>
+                                        <label>Turno</label>
+                                        <select 
+                                            className="form-input" 
+                                            value={formData.turno} 
+                                            onChange={e => setFormData({...formData, turno: e.target.value})}
+                                        >
+                                            <option value="1º Turno">1º Turno</option>
+                                            <option value="2º Turno">2º Turno</option>
+                                            <option value="3º Turno">3º Turno</option>
+                                            <option value="Administrativo">Administrativo</option>
                                         </select>
                                     </div>
                                 </div>

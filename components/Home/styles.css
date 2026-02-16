@@ -89,6 +89,7 @@
 .badge-conferindo { background-color: #3b82f6; }
 .badge-finalizado { background-color: #10b981; }
 .badge-agendado   { background-color: #6366f1; }
+.badge-divergencia{ background-color: #ef4444;}
 
 .icon-group {
     display: flex;
