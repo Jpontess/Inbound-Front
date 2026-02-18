@@ -5,8 +5,8 @@ interface Agendamento {
     id: number;
     fornecedor: string;
     data: string;
-    hora: string;
-    status: "Agendado" | "Confirmado" | "Pendente";
+    pesoNota: number;
+    status: "Agendado";
 }
 
 export default function Scheduling() {
@@ -14,37 +14,36 @@ export default function Scheduling() {
     // Estados do Formulário
     const [novoFornecedor, setNovoFornecedor] = useState("");
     const [novaData, setNovaData] = useState("");
-    const [novaHora, setNovaHora] = useState("");
+    const [novoPesoNota, setNovoPesoNota] = useState<number | string>("");
 
     const [agendamentos, setAgendamentos] = useState<Agendamento[]>([
-        { id: 1, fornecedor: "Klabin S.A.", data: "2023-10-25", hora: "08:00", status: "Confirmado" },
-        { id: 2, fornecedor: "Seara Alimentos", data: "2023-10-25", hora: "10:30", status: "Pendente" },
-        { id: 3, fornecedor: "Hortifruti Natural", data: "2023-10-26", hora: "07:00", status: "Agendado" },
+        { id: 1, fornecedor: "Klabin S.A.", data: "2026-02-17", pesoNota: 0, status: "Agendado" },
+        { id: 2, fornecedor: "Seara Alimentos", data: "2026-02-18", pesoNota: 100, status: "Agendado" },
+        { id: 3, fornecedor: "Hortifruti Natural", data: "2026-02-19", pesoNota: 1000, status: "Agendado" },
     ]);
 
     const handleSave = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!novoFornecedor || !novaData || !novaHora) return;
+        if (!novoFornecedor || !novaData || !novoPesoNota) return;
 
         const novoItem: Agendamento = {
             id: Date.now(),
             fornecedor: novoFornecedor,
             data: novaData,
-            hora: novaHora,
+            pesoNota: Number(novoPesoNota),
             status: "Agendado" // Padrão inicial
         };
 
-        // Ordena por Data e depois por Hora
+        // Ordena por Data e depois por pesoNota
         const listaAtualizada = [...agendamentos, novoItem].sort((a, b) => {
-            const dateA = new Date(`${a.data}T${a.hora}`);
-            const dateB = new Date(`${b.data}T${b.hora}`);
+            const dateA = new Date(`${a.data}T${a.pesoNota}`);
+            const dateB = new Date(`${b.data}T${b.pesoNota}`);
             return dateA.getTime() - dateB.getTime();
         });
         
         setAgendamentos(listaAtualizada);
         setNovoFornecedor("");
-        setNovaHora("");
-        // Mantemos a data para facilitar múltiplos agendamentos no mesmo dia
+        
     };
 
     const handleDelete = (id: number) => {
@@ -99,8 +98,7 @@ export default function Scheduling() {
                                                 <span className="weekday">{semana}</span>
                                                 <span className="separator">•</span>
                                                 <span className="time-badge">
-                                                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                    {item.hora}
+                                                    {item.pesoNota} Kg
                                                 </span>
                                             </div>
                                         </div>
@@ -139,13 +137,13 @@ export default function Scheduling() {
                                         />
                                     </div>
                                     <div className="input-group" style={{width: '100px'}}>
-                                        <label>Hora</label>
+                                        <label>Peso NF</label>
                                         <input 
-                                            type="time" 
+                                            type="number" 
                                             className="custom-input" 
                                             required
-                                            value={novaHora}
-                                            onChange={e => setNovaHora(e.target.value)}
+                                            value={novoPesoNota}
+                                            onChange={e => setNovoPesoNota(e.target.value ? Number(e.target.value) : "")}
                                         />
                                     </div>
                                 </div>

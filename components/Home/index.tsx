@@ -1,15 +1,11 @@
 import "./styles.css";
 import { useState, useEffect } from "react";
 import Kpis from "../Cards/kpis";
-// IMPORTANTE: Importe o seu Toolbar aqui
 import Toolbar from "../Toolbar/toolbar"; 
 import ActionButtons from "../Buttons/actionButtons";
 import ActionsModals from "../Modal/actionModals";
-
-// Imports do Backend
 import { ReceiptService } from "../../src/services/Receipt/receiptService";
 import type { Receipt } from "../../src/interface/Receipt/receiptDto";
-// Usamos 'any' no tipo Modal para flexibilizar, ou importe seu tipo original
 import type { Modal } from "../../src/interface/recebimento"; 
 
 export default function Home() {
@@ -19,7 +15,7 @@ export default function Home() {
     
     // Estados de Filtro (Ficam aqui na Home)
     const [busca, setBusca] = useState("");
-    const [dataFiltro, setDataFiltro] = useState(""); 
+    const [dataFiltro, setDataFiltro] = useState(new Date().toLocaleDateString("en-CA")); 
 
     // --- ESTADO DOS DADOS (SUBSTITUI O MOCK) ---
     const [receipts, setReceipts] = useState<Receipt[]>([]);
@@ -42,8 +38,6 @@ export default function Home() {
         loadData();
     }, []);
 
-    // --- FUNÇÕES MODAL ---
-    // Ajustei o tipo de 'veiculo' para any para aceitar o objeto do banco sem conflito de tipagem
     const handleOpenModal = (tipo: Modal, veiculo: any) => {
         setVeiculoSelecionado(veiculo);
         setModalAberto(tipo);
@@ -63,7 +57,7 @@ export default function Home() {
             if (modalAberto === 'iniciar') {
                 await ReceiptService.start(veiculoSelecionado._id, {
                     notaFiscal: dadosForm.notaFiscal,
-                    pesoNota: Number(dadosForm.qtdVolumes) // Adaptando conforme seu form
+                    pesoNota: Number(dadosForm.qtdVolumes) 
                 });
                 alert("Iniciado com sucesso!");
             }
@@ -92,7 +86,7 @@ export default function Home() {
     };
 
     const veiculosFiltrados = receipts.filter(v => {
-        const nomeFornecedor = v.fornecedor?.nome || ""; 
+        const nomeFornecedor = v.nomeFornecedor || ""; 
         const matchTexto = nomeFornecedor.toLowerCase().includes(busca.toLowerCase()) || 
                            (v.notaFiscal || "").includes(busca) ||
                            (v.placa || "").toLowerCase().includes(busca.toLowerCase());
@@ -104,7 +98,7 @@ export default function Home() {
 
     return (
         <div className="dashboard-container">
-            <Kpis dados={receipts}/>
+            <Kpis dados={veiculosFiltrados}/>
             
             <div className="main-panel">
                 <section className="table-card">
@@ -146,7 +140,7 @@ export default function Home() {
                                             </span>
                                         </td>
                                         {/* Acessando nome dentro do objeto fornecedor */}
-                                        <td className="fw-bold">{v.fornecedor?.nome || "---"}</td>
+                                        <td className="fw-bold">{v.nomeFornecedor || "---"}</td>
                                         <td>{v.notaFiscal || "-"}</td>
                                         <td>
                                             <span className="plate-badge">
@@ -160,7 +154,7 @@ export default function Home() {
                                         </td>
                                         <td style={{textAlign: "right"}}>
                                             <ActionButtons
-                                                veiculo={v as any} // Cast para evitar erro de tipagem com interface antiga
+                                                veiculo={v as any} 
                                                 onAction={handleOpenModal} 
                                             />
                                         </td>

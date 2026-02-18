@@ -1,11 +1,11 @@
 /* Container da Página */
 .scheduling-page {
     width: 100%;
-    min-height: calc(100vh - 80px); /* Ajuste da Topbar */
+    min-height: calc(100vh - 80px); 
     display: flex;
     justify-content: center;
-    padding: 40px 20px;
-    background-color: transparent; /* Pega o fundo do App */
+    padding: 100px 20px;
+    background-color: transparent;
     box-sizing: border-box;
 }
 

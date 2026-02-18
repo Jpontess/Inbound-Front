@@ -4,7 +4,9 @@ import type { User } from "../User/User";
 export interface Receipt {
     _id: string;
     fornecedor: Supplier; 
-    usuario?: User;       
+    nomeFornecedor: string
+    usuario?: User;
+    nomeUsuario: string       
     placa?: string;
     notaFiscal?: string;
     pesoNota?: number;

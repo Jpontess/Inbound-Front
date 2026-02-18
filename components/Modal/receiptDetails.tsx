@@ -31,7 +31,7 @@ export default function ReceiptDetails({ data, onClose }: Props) {
                         <div className="detail-group">
                             <label>Fornecedor</label>
                             {/* Backend retorna objeto fornecedor populado */}
-                            <span className="value-lg">{data.fornecedor?.nome || "---"}</span>
+                            <span className="value-lg">{data.nomeFornecedor || "---"}</span>
                         </div>
                         <div className="detail-group">
                             <label>Status Atual</label>
@@ -53,7 +53,7 @@ export default function ReceiptDetails({ data, onClose }: Props) {
                         <div className="detail-group">
                             <label>Responsável</label>
                             {/* Backend retorna objeto usuario populado */}
-                            <span className="value-md">{data.usuario?.nome || "---"}</span>
+                            <span className="value-md">{data.nomeUsuario || "---"}</span>
                         </div>
                     </div>
                 </div>

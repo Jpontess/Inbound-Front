@@ -23,7 +23,7 @@ export default function ActionButtons({ veiculo, onAction }: ActionButtonsProps)
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
             </button>
             
-            {veiculo.status !== "Finalizado" && veiculo.status !== "Agendado" && veiculo.status !== "Conferindo" && (
+            {veiculo.status === "Aguardando" && (
                 <button className="btn-icon btn-play" title="Iniciar" onClick={() => onAction('iniciar', veiculo)}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3L19 12L5 21V3Z" /></svg>
                 </button>

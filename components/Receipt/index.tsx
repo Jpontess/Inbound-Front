@@ -20,7 +20,7 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
     // 2. Estado do Formulário
     const [form, setForm] = useState({
         fornecedorId: "", 
-        fornecedorNome: "", // Vamos usar isso para mostrar no input
+        fornecedorNome: "", 
         placa: "", 
         notaFiscal: "", 
         qtdVolumes: "",  
@@ -64,15 +64,14 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
         f.nome.toLowerCase().includes(buscaFornecedor.toLowerCase())
     );
 
-    // Quando o usuário clica em uma sugestão
     const selecionarFornecedor = (fornecedor: Supplier) => {
         setForm(prev => ({ 
             ...prev, 
             fornecedorId: fornecedor._id, 
             fornecedorNome: fornecedor.nome 
         }));
-        setBuscaFornecedor(fornecedor.nome); // Preenche o input com o nome
-        setMostrarSugestoes(false); // Esconde a lista
+        setBuscaFornecedor(fornecedor.nome); 
+        setMostrarSugestoes(false); 
     };
 
     // Quando o usuário digita

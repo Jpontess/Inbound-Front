@@ -213,8 +213,7 @@ export default function Users() {
                                         >
                                             <option value="Operador">Operador</option>
                                             <option value="Líder">Líder</option>
-                                            <option value="Gerente">Gerente</option>
-                                            <option value="Conferente">Conferente</option>
+                                            <option value="Portaria">Portaria</option>
                                             <option value="Admin">Admin</option>
                                         </select>
                                     </div>
@@ -227,9 +226,9 @@ export default function Users() {
                                             value={formData.turno} 
                                             onChange={e => setFormData({...formData, turno: e.target.value})}
                                         >
-                                            <option value="1º Turno">1º Turno</option>
-                                            <option value="2º Turno">2º Turno</option>
-                                            <option value="3º Turno">3º Turno</option>
+                                            <option value="Manhã">Manhã</option>
+                                            <option value="Tarde">Tarde</option>
+                                            <option value="Noite">Noite</option>
                                             <option value="Administrativo">Administrativo</option>
                                         </select>
                                     </div>
