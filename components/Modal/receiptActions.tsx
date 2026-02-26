@@ -1,8 +1,29 @@
 import { useState } from "react";
+import type { StartReceiptDto } from "../../src/interface/Receipt/startReceipt.dto";
+import type { FinishReceiptDto } from "../../src/interface/Receipt/finishReceipt.dto";
+
+// Interface genérica para suportar diferentes tipos de dados nos formulários
+interface ReceiptActionProps<T> {
+    onClose: () => void;
+    onConfirm: (form: T) => void;
+    data?: T;
+}
 
 // --- FORMULÁRIO DE INICIAR (PLAY) ---
-export function StartReceiptForm({ onClose, onConfirm }: any) {
-    const [form, setForm] = useState({ notaFiscal: "", qtdVolumes: "" });
+export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProps<StartReceiptDto>) {
+    const [form, setForm] = useState<StartReceiptDto>({
+        notaFiscal: data?.notaFiscal || "",
+        pesoNota: data?.pesoNota || 0
+    });
+
+    const handleConfirm = () => {
+        // Validação básica antes de enviar
+        if (!form.notaFiscal) {
+            alert("Por favor, preencha a Nota Fiscal.");
+            return;
+        }
+        onConfirm(form);
+    };
 
     return (
         <>
@@ -13,30 +34,45 @@ export function StartReceiptForm({ onClose, onConfirm }: any) {
             <div className="modal-body">
                 <div className="form-group">
                     <label>Nota Fiscal *</label>
-                    <input className="receipt-input" 
+                    <input 
+                        className="receipt-input" 
+                        type="text"
+                        placeholder="Digite o número da NF"
                         value={form.notaFiscal}
                         onChange={e => setForm({...form, notaFiscal: e.target.value})}
                     />
                 </div>
                 <div className="form-group">
                     <label>Qtd Volumes (Peso Nota)</label>
-                    <input className="receipt-input" type="number"
-                        value={form.qtdVolumes}
-                        onChange={e => setForm({...form, qtdVolumes: e.target.value})}
+                    <input 
+                        className="receipt-input" 
+                        type="number"
+                        placeholder="0"
+                        // Lógica para não exibir 0 quando o campo for focado/apagado
+                        value={form.pesoNota === 0 ? "" : form.pesoNota}
+                        onChange={e => {
+                            const val = e.target.value;
+                            setForm({...form, pesoNota: val === "" ? 0 : Number(val)});
+                        }}
                     />
                 </div>
             </div>
             <div className="modal-footer">
                 <button className="btn-modal btn-secondary" onClick={onClose}>Cancelar</button>
-                <button className="btn-modal btn-confirm" onClick={() => onConfirm(form)}>Confirmar Início</button>
+                <button className="btn-modal btn-confirm" onClick={handleConfirm}>
+                    Confirmar Início
+                </button>
             </div>
         </>
     );
 }
 
 // --- FORMULÁRIO DE FINALIZAR (STOP) ---
-export function FinishReceiptForm({ onClose, onConfirm }: any) {
-    const [form, setForm] = useState({ pesoContado: "", observacao: "" });
+export function FinishReceiptForm({ onClose, onConfirm }: ReceiptActionProps<FinishReceiptDto>) {
+    const [form, setForm] = useState<FinishReceiptDto>({ 
+        pesoBalanca: 0, 
+        obs: "" 
+    });
 
     return (
         <>
@@ -47,29 +83,43 @@ export function FinishReceiptForm({ onClose, onConfirm }: any) {
             <div className="modal-body">
                 <div className="form-group">
                     <label>Peso Balança / Contado *</label>
-                    <input className="receipt-input" type="number"
-                        value={form.pesoContado}
-                        onChange={e => setForm({...form, pesoContado: e.target.value})}
+                    <input 
+                        className="receipt-input" 
+                        type="number"
+                        placeholder="Digite o peso final"
+                        value={form.pesoBalanca === 0 ? "" : form.pesoBalanca}
+                        onChange={e => {
+                            const val = e.target.value;
+                            setForm({...form, pesoBalanca: val === "" ? 0 : Number(val)});
+                        }}
                     />
                 </div>
                 <div className="form-group">
                     <label>Observações</label>
-                    <textarea className="receipt-input" rows={3}
-                        value={form.observacao}
-                        onChange={e => setForm({...form, observacao: e.target.value})}
+                    <textarea 
+                        className="receipt-input" 
+                        rows={3}
+                        placeholder="Alguma divergência ou detalhe?"
+                        value={form.obs}
+                        onChange={e => setForm({...form, obs: e.target.value})}
                     />
                 </div>
             </div>
             <div className="modal-footer">
                 <button className="btn-modal btn-secondary" onClick={onClose}>Cancelar</button>
-                <button className="btn-modal btn-confirm" onClick={() => onConfirm(form)}>Finalizar</button>
+                <button 
+                    className="btn-modal btn-confirm" 
+                    onClick={() => onConfirm(form)}
+                >
+                    Finalizar
+                </button>
             </div>
         </>
     );
 }
 
 // --- CONFIRMAÇÃO DE EXCLUSÃO ---
-export function DeleteReceiptConfirm({ onClose, onConfirm }: any) {
+export function DeleteReceiptConfirm({ onClose, onConfirm }: ReceiptActionProps<void>) {
     return (
         <>
             <div className="modal-header">
@@ -77,13 +127,21 @@ export function DeleteReceiptConfirm({ onClose, onConfirm }: any) {
                 <button className="btn-close" onClick={onClose}>&times;</button>
             </div>
             <div className="modal-body">
-                <p>Tem certeza que deseja excluir este recebimento? Esta ação não pode ser desfeita.</p>
+                <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                    <p style={{ fontSize: '1.1rem', fontWeight: '500' }}>
+                        Tem certeza que deseja excluir este recebimento?
+                    </p>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                        Esta ação é irreversível e removerá todos os dados deste veículo.
+                    </p>
+                </div>
             </div>
             <div className="modal-footer">
                 <button className="btn-modal btn-secondary" onClick={onClose}>Cancelar</button>
-                <button className="btn-modal" 
+                <button 
+                    className="btn-modal" 
                     style={{background: '#ef4444', color: 'white', border:'none'}} 
-                    onClick={onConfirm}
+                    onClick={() => onConfirm()}
                 >
                     Excluir Definitivamente
                 </button>

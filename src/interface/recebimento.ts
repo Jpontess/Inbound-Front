@@ -1,5 +1,5 @@
 export interface Recebimento{
-    id: number,
+    id: string;
     nome: string;
     responsavel?: string;
     placa?: string;

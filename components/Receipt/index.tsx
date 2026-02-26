@@ -8,7 +8,7 @@ import type { Supplier } from "../../src/interface/Supplier/supplier";
 import type { CreateReceiptDto } from "../../src/interface/Receipt/createReceiptDto"; 
 
 interface NewReceiptProps {
-    onSalvar: (dados: any) => void;
+    onSalvar: (dados: CreateReceiptDto) => void;
 }
 
 export default function NewReceipt({ onSalvar }: NewReceiptProps) {
@@ -21,9 +21,7 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
     const [form, setForm] = useState({
         fornecedorId: "", 
         fornecedorNome: "", 
-        placa: "", 
-        notaFiscal: "", 
-        qtdVolumes: "",  
+        placa: ""
     });
 
     // 3. ESTADOS NOVOS PARA O AUTOCOMPLETE
@@ -104,8 +102,7 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
         try {
             const payload: CreateReceiptDto = {
                 fornecedor: form.fornecedorId,
-                placa: form.placa,
-                usuario: "698cfd69317e244aaf65cefa" 
+                placa: form.placa
             };
 
             await ReceiptService.create(payload);
@@ -115,8 +112,7 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
 
             // Limpa tudo
             setForm({
-                fornecedorId: "", fornecedorNome: "", placa: "", 
-                notaFiscal: "", qtdVolumes: ""
+                fornecedorId: "", fornecedorNome: "", placa: ""
             });
             setBuscaFornecedor(""); // Limpa o input de busca
 

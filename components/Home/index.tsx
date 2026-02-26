@@ -7,6 +7,7 @@ import ActionsModals from "../Modal/actionModals";
 import { ReceiptService } from "../../src/services/Receipt/receiptService";
 import type { Receipt } from "../../src/interface/Receipt/receiptDto";
 import type { Modal } from "../../src/interface/recebimento"; 
+import type { ReceiptForm } from "../../src/interface/Receipt/receiptForm";
 
 export default function Home() {
 
@@ -38,7 +39,7 @@ export default function Home() {
         loadData();
     }, []);
 
-    const handleOpenModal = (tipo: Modal, veiculo: any) => {
+    const handleOpenModal = (tipo: Modal, veiculo: Receipt) => {
         setVeiculoSelecionado(veiculo);
         setModalAberto(tipo);
     };
@@ -49,23 +50,23 @@ export default function Home() {
     };
 
     // --- 2. AÇÕES CONECTADAS NA API ---
-    const handleConfirmAction = async (dadosForm?: any) => {
-        if (!veiculoSelecionado) return;
+    const handleConfirmAction = async (dadosForm?: ReceiptForm) => {
+        if (!veiculoSelecionado || !veiculoSelecionado._id) return;
 
         try {
             // Lógica de INICIAR
             if (modalAberto === 'iniciar') {
                 await ReceiptService.start(veiculoSelecionado._id, {
-                    notaFiscal: dadosForm.notaFiscal,
-                    pesoNota: Number(dadosForm.qtdVolumes) 
+                    notaFiscal: dadosForm!.notaFiscal,
+                    pesoNota: Number(dadosForm!.pesoNota) 
                 });
                 alert("Iniciado com sucesso!");
             }
             // Lógica de FINALIZAR
             else if (modalAberto === 'finalizar') {
                 await ReceiptService.finish(veiculoSelecionado._id, {
-                    pesoBalanca: Number(dadosForm.pesoContado),
-                    obs: dadosForm.observacao
+                    pesoBalanca: Number(dadosForm!.pesoBalanca),
+                    obs: dadosForm!.obs
                 });
                 alert("Finalizado com sucesso!");
             }
@@ -73,6 +74,12 @@ export default function Home() {
             else if (modalAberto === 'deletar') {
                 await ReceiptService.delete(veiculoSelecionado._id);
                 alert("Deletado com sucesso!");
+            }
+            else if(modalAberto === "entrada") {
+                await ReceiptService.entryByPlate(veiculoSelecionado._id, {
+                    placa: dadosForm!.placa,
+                });
+                alert("Registrado entrada de veículo com sucesso!");
             }
 
             // Atualiza a tabela e fecha o modal
@@ -90,7 +97,8 @@ export default function Home() {
         const matchTexto = nomeFornecedor.toLowerCase().includes(busca.toLowerCase()) || 
                            (v.notaFiscal || "").includes(busca) ||
                            (v.placa || "").toLowerCase().includes(busca.toLowerCase());
-        const dataV = v.dataChegada ? v.dataChegada.substring(0, 10) : "";
+        const dataParaFiltro = v.dataChegada || v.dataAgendamento || "";
+        const dataV = dataParaFiltro.substring(0, 10); // Extrai apenas a parte da data (YYYY-MM-DD)
         const matchData = dataFiltro ? dataV === dataFiltro : true;
         
         return matchTexto && matchData;
@@ -135,7 +143,7 @@ export default function Home() {
                                 veiculosFiltrados.map((v) => (
                                     <tr key={v._id}>
                                         <td>
-                                            <span className={`badge badge-${v.status.toLowerCase()}`}>
+                                            <span className={`badge badge-${v.status?.toLowerCase()}`}>
                                                 {v.status}
                                             </span>
                                         </td>
@@ -154,7 +162,7 @@ export default function Home() {
                                         </td>
                                         <td style={{textAlign: "right"}}>
                                             <ActionButtons
-                                                veiculo={v as any} 
+                                                veiculo={v}
                                                 onAction={handleOpenModal} 
                                             />
                                         </td>
@@ -169,7 +177,7 @@ export default function Home() {
             <ActionsModals
                 isOpen={!!modalAberto}
                 type={modalAberto}
-                veiculo={veiculoSelecionado as any}
+                veiculo={veiculoSelecionado as Receipt}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmAction}
             />

@@ -17,6 +17,12 @@ export const ReceiptService = {
         return response.data;
     },
 
+    // 2.1 Criar Agendamento
+    createSchedule: async (data: CreateReceiptDto) => {
+        const response = await api.post("/receipt/schedule", data);
+        return response.data;
+    },
+
     // 3. Atualizar Genérico (Editar)
     update: async (id: string, data: UpdateReceiptDto) => {
         const response = await api.patch(`/receipt/${id}`, data); 
@@ -27,7 +33,6 @@ export const ReceiptService = {
     start: async (id: string, data: { notaFiscal: string, pesoNota: number }) => {
         const payload = {
             ...data,
-            status: "Conferindo"
         };
         const response = await api.post(`/receipt/${id}`, payload);
         return response.data;
@@ -42,5 +47,10 @@ export const ReceiptService = {
     // 6. Excluir
     delete: async (id: string) => {
         await api.delete(`/receipt/${id}`);
+    },
+
+    entryByPlate: async (id: string, data: { placa: string }) => {
+        const response = await api.patch(`/receipt/${id}/input`, data);
+        return response.data;
     }
 };

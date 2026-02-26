@@ -1,9 +1,10 @@
 // src/components/ActionButtons.tsx
-import {type Recebimento, type Modal}  from "../../src/interface/recebimento";
+import {type Modal}  from "../../src/interface/recebimento";
+import type { Receipt } from "../../src/interface/Receipt/receiptDto";
 
 interface ActionButtonsProps {
-    veiculo: Recebimento;
-    onAction: (tipo: Modal, veiculo: Recebimento) => void;
+    veiculo: Receipt;
+    onAction: (tipo: Modal, veiculo: Receipt) => void;
 }
 
 export default function ActionButtons({ veiculo, onAction }: ActionButtonsProps) {

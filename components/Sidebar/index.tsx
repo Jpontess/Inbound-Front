@@ -21,9 +21,6 @@ export default function SideBar()
                         <a href="/schedule">Agendamento</a>
                     </li>
                     <li>
-                        <a href="/users">Usuário</a>
-                    </li>
-                    <li>
                         <a href="/supplier">Fornecedores</a>
                     </li>
                 </ul>

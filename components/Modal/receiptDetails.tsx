@@ -35,7 +35,7 @@ export default function ReceiptDetails({ data, onClose }: Props) {
                         </div>
                         <div className="detail-group">
                             <label>Status Atual</label>
-                            <span className={`badge badge-${getStatusClass(data.status)}`}>
+                            <span className={`badge badge-${getStatusClass(data.status || "---")}`}>
                                 {data.status}
                             </span>
                         </div>

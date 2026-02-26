@@ -14,12 +14,12 @@ export const SupplierService = {
     },
 
     update: async (id: string, updateSupplier: SupplierDto) => {
-        const editSupplier = await api.patch(`/supplier/${id}`, updateSupplier)
+        const editSupplier = await api.patch(`/supplier/update/${id}`, updateSupplier)
         return editSupplier.data
     },
 
     delete: async (id: string) => {
-        const deleteSupplier = await api.delete(`/supplier/${id}`)
+        const deleteSupplier = await api.delete(`/supplier/delete/${id}`)
         return deleteSupplier.data
     }
 }

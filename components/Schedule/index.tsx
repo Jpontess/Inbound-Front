@@ -1,172 +1,188 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./styles.css"; 
+import { ReceiptService } from "../../src/services/Receipt/receiptService";
+import { SupplierService } from "../../src/services/Supplier/supplierService";
+import type { Receipt } from "../../src/interface/Receipt/receiptDto";
 
-interface Agendamento {
-    id: number;
-    fornecedor: string;
-    data: string;
-    pesoNota: number;
-    status: "Agendado";
+interface Supplier {
+    _id: string;
+    nome: string;
 }
 
 export default function Scheduling() {
-    
+    // Estados dos Dados da API
+    const [agendamentos, setAgendamentos] = useState<Receipt[]>([]);
+    const [fornecedores, setFornecedores] = useState<Supplier[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     // Estados do Formulário
-    const [novoFornecedor, setNovoFornecedor] = useState("");
+    const [selectedFornecedorId, setSelectedFornecedorId] = useState("");
     const [novaData, setNovaData] = useState("");
-    const [novoPesoNota, setNovoPesoNota] = useState<number | string>("");
+    const [novoPesoNota, setNovoPesoNota] = useState<number | "">("");
 
-    const [agendamentos, setAgendamentos] = useState<Agendamento[]>([
-        { id: 1, fornecedor: "Klabin S.A.", data: "2026-02-17", pesoNota: 0, status: "Agendado" },
-        { id: 2, fornecedor: "Seara Alimentos", data: "2026-02-18", pesoNota: 100, status: "Agendado" },
-        { id: 3, fornecedor: "Hortifruti Natural", data: "2026-02-19", pesoNota: 1000, status: "Agendado" },
-    ]);
-
-    const handleSave = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!novoFornecedor || !novaData || !novoPesoNota) return;
-
-        const novoItem: Agendamento = {
-            id: Date.now(),
-            fornecedor: novoFornecedor,
-            data: novaData,
-            pesoNota: Number(novoPesoNota),
-            status: "Agendado" // Padrão inicial
-        };
-
-        // Ordena por Data e depois por pesoNota
-        const listaAtualizada = [...agendamentos, novoItem].sort((a, b) => {
-            const dateA = new Date(`${a.data}T${a.pesoNota}`);
-            const dateB = new Date(`${b.data}T${b.pesoNota}`);
-            return dateA.getTime() - dateB.getTime();
-        });
-        
-        setAgendamentos(listaAtualizada);
-        setNovoFornecedor("");
-        
+    // --- CARREGAR DADOS ---
+    const loadInitialData = async () => {
+        try {
+            setIsLoading(true);
+            const [dataReceipts, dataSuppliers] = await Promise.all([
+                ReceiptService.getAll(),
+                SupplierService.getAll()
+            ]);
+            
+            // Filtra apenas os que estão com status "Agendado"
+            setAgendamentos(dataReceipts.filter((r: Receipt) => r.status === "Agendado"));
+            setFornecedores(dataSuppliers);
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleDelete = (id: number) => {
+    useEffect(() => {
+        loadInitialData();
+    }, []);
+
+    // --- SALVAR AGENDAMENTO ---
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedFornecedorId || !novaData || novoPesoNota === "") return;
+
+        try {
+            await ReceiptService.createSchedule({
+                fornecedor: selectedFornecedorId,
+                dataAgendamento: novaData,
+                pesoNota: Number(novoPesoNota)
+            });
+
+            alert("Agendamento realizado com sucesso!");
+            
+            // Limpa formulário e recarrega lista
+            setSelectedFornecedorId("");
+            setNovaData("");
+            setNovoPesoNota("");
+            loadInitialData();
+        } catch (error) {
+            alert("Erro ao salvar agendamento." + error);
+        }
+    };
+
+    const handleDelete = async (id: string) => {
         if(confirm("Remover este agendamento?")) {
-            setAgendamentos(agendamentos.filter(item => item.id !== id));
+            try {
+                await ReceiptService.delete(id);
+                loadInitialData();
+            } catch (error) {
+                alert("Erro ao remover." + error);
+            }
         }
     };
 
     return (
         <div className="scheduling-page">
             <div className="scheduling-container">
-                
-                {/* Cabeçalho */}
                 <div className="scheduling-header">
                     <h2>Agenda de Recebimento</h2>
                     <p>Planejamento de chegada de fornecedores.</p>
                 </div>
 
                 <div className="scheduling-grid">
-                    
-                    {/* ESQUERDA: LISTA */}
+                    {/* LISTA */}
                     <div className="list-section">
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15}}>
-                            <h3 className="section-title">Próximos ({agendamentos.length})</h3>
-                        </div>
+                        <h3 className="section-title">Próximos ({agendamentos.length})</h3>
                         
                         <div className="cards-wrapper">
-                            {agendamentos.length === 0 && (
-                                <div className="empty-state">
-                                    <p>Nenhum agendamento encontrado.</p>
-                                </div>
-                            )}
-
                             {agendamentos.map((item) => {
-                                const dateObj = new Date(item.data + 'T12:00:00'); // Trick para fuso horário
-                                const dia = dateObj.getDate();
-                                const mes = dateObj.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '');
-                                const semana = dateObj.toLocaleDateString('pt-BR', { weekday: 'long' });
+    // 1. Resolve o problema do Invalid Date: 
+    // Se a data vier como "2026-02-25", adicionamos o horário para evitar problemas de fuso
+    const dateStr = item.dataAgendamento?.includes('T') 
+        ? item.dataAgendamento 
+        : `${item.dataAgendamento}T12:00:00`;
+    
+    const dateObj = new Date(dateStr);
 
-                                return (
-                                    <div key={item.id} className="schedule-card">
-                                        {/* Box da Data */}
-                                        <div className="date-badge">
-                                            <span className="day">{dia}</span>
-                                            <span className="month">{mes}</span>
-                                        </div>
-                                        
-                                        {/* Informações */}
-                                        <div className="info-col">
-                                            <h4>{item.fornecedor}</h4>
-                                            <div className="meta-info">
-                                                <span className="weekday">{semana}</span>
-                                                <span className="separator">•</span>
-                                                <span className="time-badge">
-                                                    {item.pesoNota} Kg
-                                                </span>
-                                            </div>
-                                        </div>
+    // 2. Verifica se a conversão deu certo antes de renderizar
+    const isValid = !isNaN(dateObj.getTime());
 
-                                        {/* Status */}
-                                        <span className={`status-pill status-${item.status.toLowerCase()}`}>
-                                            {item.status}
-                                        </span>
+    const dia = isValid ? dateObj.getDate() : "--";
+    const mes = isValid 
+        ? dateObj.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '') 
+        : "ERR";
+    const semana = isValid 
+        ? dateObj.toLocaleDateString('pt-BR', { weekday: 'long' }) 
+        : "Data Inválida";
 
-                                        {/* Botão Remover */}
-                                        <button className="btn-remove-icon" onClick={() => handleDelete(item.id)} title="Remover">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                        </button>
-                                    </div>
-                                );
-                            })}
+    return (
+        <div key={item._id} className="schedule-card">
+            {/* Box da Data */}
+            <div className="date-badge">
+                <span className="day">{dia}</span>
+                <span className="month">{mes}</span>
+            </div>
+            
+            {/* Informações */}
+            <div className="info-col">
+                <h4>{item.nomeFornecedor || "Fornecedor não identificado"}</h4>
+                <div className="meta-info">
+                    <span className="weekday">{semana}</span>
+                    <span className="separator">•</span>
+                    <span className="time-badge">
+                        {item.pesoNota} Kg
+                    </span>
+                </div>
+            </div>
+
+            {/* Restante do seu código (Status e Botão Remover) */}
+            <button className="btn-remove-icon" onClick={() => handleDelete(item._id!)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                </svg>
+            </button>
+        </div>
+    );
+})}
                         </div>
                     </div>
 
-                    {/* DIREITA: FORMULÁRIO (STICKY) */}
+                    {/* FORMULÁRIO */}
                     <div className="form-section">
                         <div className="form-card">
                             <h3>Novo Agendamento</h3>
-                            <p>Adicione um fornecedor à fila.</p>
-                            
                             <form onSubmit={handleSave}>
+                                <div className="input-group">
+                                    <label>Fornecedor</label>
+                                    <select 
+                                        className="custom-input"
+                                        required
+                                        value={selectedFornecedorId}
+                                        onChange={e => setSelectedFornecedorId(e.target.value)}
+                                    >
+                                        <option value="">Selecione um fornecedor</option>
+                                        {fornecedores.map(f => (
+                                            <option key={f._id} value={f._id}>{f.nome}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
                                 <div style={{display: 'flex', gap: 15}}>
                                     <div className="input-group" style={{flex: 1}}>
                                         <label>Data</label>
-                                        <input 
-                                            type="date" 
-                                            className="custom-input" 
-                                            required
-                                            value={novaData}
-                                            onChange={e => setNovaData(e.target.value)}
-                                        />
+                                        <input type="date" className="custom-input" required
+                                            value={novaData} onChange={e => setNovaData(e.target.value)} />
                                     </div>
-                                    <div className="input-group" style={{width: '100px'}}>
+                                    <div className="input-group" style={{width: '120px'}}>
                                         <label>Peso NF</label>
-                                        <input 
-                                            type="number" 
-                                            className="custom-input" 
-                                            required
-                                            value={novoPesoNota}
-                                            onChange={e => setNovoPesoNota(e.target.value ? Number(e.target.value) : "")}
-                                        />
+                                        <input type="number" className="custom-input" required
+                                            value={novoPesoNota} onChange={e => setNovoPesoNota(e.target.value ? Number(e.target.value) : "")} />
                                     </div>
                                 </div>
 
-                                <div className="input-group">
-                                    <label>Fornecedor</label>
-                                    <input 
-                                        type="text" 
-                                        className="custom-input" 
-                                        placeholder="Ex: Coca-Cola"
-                                        required
-                                        value={novoFornecedor}
-                                        onChange={e => setNovoFornecedor(e.target.value)}
-                                    />
-                                </div>
-
-                                <button type="submit" className="btn-submit">
+                                <button type="submit" className="btn-submit" disabled={isLoading}>
                                     Agendar Entrega
                                 </button>
                             </form>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

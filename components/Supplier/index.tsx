@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../../components/Users/styles.css"
+import "./styles.css"
 import { SupplierService } from "../../src/services/Supplier/supplierService"; 
 import { Supplier } from "../../src/interface/Supplier/supplier";
 import { SupplierDto } from "../../src/interface/Supplier/supplier.dto";
@@ -15,7 +15,6 @@ export default function SupplierPage() {
 
     const [formData, setFormData] = useState<SupplierDto>({
         nome: "", 
-        status: true // true = Ativo
     });
 
     // --- CARREGAR DADOS ---
@@ -41,12 +40,11 @@ export default function SupplierPage() {
         if (supplier) {
             setEditingId(supplier._id);
             setFormData({
-                nome: supplier.nome,
-                status: supplier.status 
+                nome: supplier.nome
             });
         } else {
             setEditingId(null);
-            setFormData({ nome: "", status: true });
+            setFormData({ nome: ""});
         }
         setIsModalOpen(true);
     };
@@ -184,24 +182,6 @@ export default function SupplierPage() {
                                         onChange={e => setFormData({...formData, nome: e.target.value})}
                                     />
                                 </div>
-                                
-                                <div style={{display: 'flex', gap: 15}}>
-                                    <div className="form-group" style={{width: '120px'}}>
-                                        <label>Status</label>
-                                        <select 
-                                            className="form-input"
-                                            value={formData.status ? "true" : "false"}
-                                            onChange={e => {
-                                                const isAtivo = e.target.value === "true";
-                                                setFormData({...formData, status: isAtivo});
-                                            }}
-                                        >
-                                            <option value="true">Ativo</option>
-                                            <option value="false">Inativo</option>
-                                        </select>
-                                    </div>
-                                </div>
-
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn-modal btn-secondary" onClick={() => setIsModalOpen(false)}>Cancelar</button>

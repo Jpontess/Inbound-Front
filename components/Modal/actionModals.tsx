@@ -2,16 +2,17 @@ import ReceiptDetails from "./receiptDetails";
 import ReceiptEdit from "./receiptEdit"
 import { StartReceiptForm, FinishReceiptForm, DeleteReceiptConfirm } from "./receiptActions";
 import type { Receipt } from "../../src/interface/Receipt/receiptDto";
+import ReceiptEnter from "./receiptEnter";
 
 interface ActionsModalsProps {
     isOpen: boolean;
-    type: string | null; // 'visualizar' | 'iniciar' | 'finalizar' | 'deletar'
+    type: string | null; // 'visualizar' | 'iniciar' | 'finalizar' | 'deletar' | "entrada"
     veiculo: Receipt | null;
     onClose: () => void;
-    onConfirm: (dados?: any) => void;
+    onConfirm: (dados: Receipt) => void;
 }
 
-export default function ActionsModals({ isOpen, type, veiculo, onClose, onConfirm }: ActionsModalsProps) {
+export default function ActionsModals({ isOpen, type, veiculo, onClose, onConfirm}: ActionsModalsProps) {
     if (!isOpen || !veiculo) return null;
 
     return (
@@ -41,6 +42,11 @@ export default function ActionsModals({ isOpen, type, veiculo, onClose, onConfir
                 {type === 'deletar' && (
                     <DeleteReceiptConfirm onClose={onClose} onConfirm={onConfirm} />
                 )}
+
+                {/* 5. ENTRADA */}
+                {type === 'entrada' && (
+                   <ReceiptEnter onClose={onClose} onConfirm={onConfirm} />
+                 )}
 
             </div>
         </div>

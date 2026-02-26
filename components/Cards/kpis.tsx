@@ -14,7 +14,7 @@ export default function Kpis({ dados }: KpisProps) {
         return {
             total: dados.length,
             fila: dados.filter(r => 
-                ['Agendado', 'Aguardando', 'Conferindo'].includes(r.status)
+                ['Agendado', 'Aguardando', 'Conferindo'].includes(r.status!)
             ).length,
 
             finalizados: dados.filter(r => r.status === 'Finalizado').length,
