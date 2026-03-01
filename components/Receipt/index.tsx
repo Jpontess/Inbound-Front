@@ -20,7 +20,7 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
     // 2. Estado do Formulário
     const [form, setForm] = useState({
         fornecedorId: "", 
-        fornecedorNome: "", 
+        fornecedorname: "", 
         placa: ""
     });
 
@@ -44,10 +44,9 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
         carregarDados();
     }, []);
 
-    // Fecha a lista se clicar fora do componente
     useEffect(() => {
-        function handleClickOutside(event: any) {
-            if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        function handleClickOutside(event: MouseEvent) {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
                 setMostrarSugestoes(false);
             }
         }
@@ -55,20 +54,18 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [wrapperRef]);
 
-    // --- LÓGICA DO AUTOCOMPLETE ---
 
-    // Filtra a lista baseada no que foi digitado
     const fornecedoresFiltrados = listaFornecedores.filter(f => 
-        f.nome.toLowerCase().includes(buscaFornecedor.toLowerCase())
+        f.name.toLowerCase().includes(buscaFornecedor.toLowerCase())
     );
 
     const selecionarFornecedor = (fornecedor: Supplier) => {
         setForm(prev => ({ 
             ...prev, 
             fornecedorId: fornecedor._id, 
-            fornecedorNome: fornecedor.nome 
+            fornecedorname: fornecedor.name 
         }));
-        setBuscaFornecedor(fornecedor.nome); 
+        setBuscaFornecedor(fornecedor.name); 
         setMostrarSugestoes(false); 
     };
 
@@ -76,7 +73,6 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
     const handleBuscaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setBuscaFornecedor(e.target.value);
         setMostrarSugestoes(true);
-        // Se ele apagar o texto, limpamos o ID selecionado
         if (e.target.value === "") {
             setForm(prev => ({ ...prev, fornecedorId: "" }));
         }
@@ -112,9 +108,9 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
 
             // Limpa tudo
             setForm({
-                fornecedorId: "", fornecedorNome: "", placa: ""
+                fornecedorId: "", fornecedorname: "", placa: ""
             });
-            setBuscaFornecedor(""); // Limpa o input de busca
+            setBuscaFornecedor("");
 
         } catch (error) {
             console.error(error);
@@ -166,7 +162,7 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
                                             className="autocomplete-item"
                                             onClick={() => selecionarFornecedor(fornecedor)}
                                         >
-                                            {fornecedor.nome}
+                                            {fornecedor.name}
                                         </li>
                                     ))}
                                 </ul>

@@ -1,3 +1,3 @@
 export class SupplierDto{
-    nome!: string
+    name!: string
 }

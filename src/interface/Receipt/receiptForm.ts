@@ -1,11 +1,11 @@
 export class ReceiptForm {
-    notaFiscal!: string;
-    pesoNota!: number
-    pesoBalanca!: number;
-    obs!: string;
-    placa!: string;
+    invoiceNumber!: string;
+    invoiceWeight!: number
+    scaleWeight!: number;
+    notes!: string;
+    licensePlate!: string;
 }
 
 export class EntryForm {
-    placa!: string;
+    licensePlate!: string;
 }

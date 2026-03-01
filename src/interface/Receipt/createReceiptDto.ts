@@ -1,6 +1,6 @@
 export interface CreateReceiptDto {
-    fornecedor: string
-    placa?: string;
-    dataAgendamento?: string;
-    pesoNota?: number;
+    supplier: string
+    licensePlate?: string;
+    arrivalDate?: string;
+    invoiceWeight?: number;
 }

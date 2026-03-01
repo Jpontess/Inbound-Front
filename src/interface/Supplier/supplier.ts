@@ -1,5 +1,5 @@
 export class Supplier{
     _id!: string
-    nome!: string
+    name!: string
     status!: boolean
 }

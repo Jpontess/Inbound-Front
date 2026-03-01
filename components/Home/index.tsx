@@ -8,8 +8,10 @@ import { ReceiptService } from "../../src/services/Receipt/receiptService";
 import type { Receipt } from "../../src/interface/Receipt/receiptDto";
 import type { Modal } from "../../src/interface/recebimento"; 
 import type { ReceiptForm } from "../../src/interface/Receipt/receiptForm";
+import { getPayload } from "../../src/services/Auth/auth.payload";
 
 export default function Home() {
+    getPayload()
 
     const [modalAberto, setModalAberto] = useState<Modal>(null);
     const [veiculoSelecionado, setVeiculoSelecionado] = useState<Receipt | null>(null);
@@ -57,16 +59,16 @@ export default function Home() {
             // Lógica de INICIAR
             if (modalAberto === 'iniciar') {
                 await ReceiptService.start(veiculoSelecionado._id, {
-                    notaFiscal: dadosForm!.notaFiscal,
-                    pesoNota: Number(dadosForm!.pesoNota) 
+                    notaFiscal: dadosForm!.invoiceNumber,
+                    pesoNota: Number(dadosForm!.invoiceWeight) 
                 });
                 alert("Iniciado com sucesso!");
             }
             // Lógica de FINALIZAR
             else if (modalAberto === 'finalizar') {
                 await ReceiptService.finish(veiculoSelecionado._id, {
-                    pesoBalanca: Number(dadosForm!.pesoBalanca),
-                    obs: dadosForm!.obs
+                    scaleWeight: Number(dadosForm!.scaleWeight),
+                    notes: dadosForm!.notes
                 });
                 alert("Finalizado com sucesso!");
             }
@@ -77,7 +79,7 @@ export default function Home() {
             }
             else if(modalAberto === "entrada") {
                 await ReceiptService.entryByPlate(veiculoSelecionado._id, {
-                    placa: dadosForm!.placa,
+                    placa: dadosForm!.licensePlate,
                 });
                 alert("Registrado entrada de veículo com sucesso!");
             }
@@ -93,16 +95,16 @@ export default function Home() {
     };
 
     const veiculosFiltrados = receipts.filter(v => {
-        const nomeFornecedor = v.nomeFornecedor || ""; 
+        const nomeFornecedor = v.supplierName || ""; 
         const matchTexto = nomeFornecedor.toLowerCase().includes(busca.toLowerCase()) || 
-                           (v.notaFiscal || "").includes(busca) ||
-                           (v.placa || "").toLowerCase().includes(busca.toLowerCase());
-        const dataParaFiltro = v.dataChegada || v.dataAgendamento || "";
+                           (v.invoiceNumber || "").includes(busca) ||
+                           (v.licensePlate || "").toLowerCase().includes(busca.toLowerCase());
+        const dataParaFiltro = v.arrivalDate || v.schedulingDate || "";
         const dataV = dataParaFiltro.substring(0, 10); // Extrai apenas a parte da data (YYYY-MM-DD)
         const matchData = dataFiltro ? dataV === dataFiltro : true;
         
         return matchTexto && matchData;
-    });
+    }); 
 
     return (
         <div className="dashboard-container">
@@ -148,16 +150,16 @@ export default function Home() {
                                             </span>
                                         </td>
                                         {/* Acessando nome dentro do objeto fornecedor */}
-                                        <td className="fw-bold">{v.nomeFornecedor || "---"}</td>
-                                        <td>{v.notaFiscal || "-"}</td>
+                                        <td className="fw-bold">{v.supplierName || "---"}</td>
+                                        <td>{v.invoiceNumber || "-"}</td>
                                         <td>
                                             <span className="plate-badge">
-                                                {v.placa || "---"}
+                                                {v.licensePlate || "---"}
                                             </span>
                                         </td>
                                         <td>
-                                            {v.dataChegada 
-                                                ? new Date(v.dataChegada).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
+                                            {v.arrivalDate 
+                                                ? new Date(v.arrivalDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
                                                 : "--:--"}
                                         </td>
                                         <td style={{textAlign: "right"}}>

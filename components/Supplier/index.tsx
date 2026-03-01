@@ -14,7 +14,7 @@ export default function SupplierPage() {
     const [fornecedores, setFornecedores] = useState<Supplier[]>([]);
 
     const [formData, setFormData] = useState<SupplierDto>({
-        nome: "", 
+        name: "", 
     });
 
     // --- CARREGAR DADOS ---
@@ -40,11 +40,11 @@ export default function SupplierPage() {
         if (supplier) {
             setEditingId(supplier._id);
             setFormData({
-                nome: supplier.nome
+                name: supplier.name
             });
         } else {
             setEditingId(null);
-            setFormData({ nome: ""});
+            setFormData({ name: ""});
         }
         setIsModalOpen(true);
     };
@@ -80,7 +80,7 @@ export default function SupplierPage() {
     };
     
     const filteredSuppliers = fornecedores.filter(f => 
-        (f.nome || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (f.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
         (f.status ? "ativo" : "inativo").includes(searchTerm.toLowerCase())
     );
 
@@ -102,7 +102,7 @@ export default function SupplierPage() {
                     <div style={{padding: '20px', borderBottom: '1px solid #e2e8f0'}}>
                         <input 
                             type="text" 
-                            placeholder="Buscar por nome ou status..." 
+                            placeholder="Buscar por name ou status..." 
                             style={{
                                 padding: '10px 15px', 
                                 borderRadius: '8px', 
@@ -126,7 +126,7 @@ export default function SupplierPage() {
                             <thead>
                                 <tr>
                                     <th>Status</th>
-                                    <th>Nome</th>
+                                    <th>Name</th>
                                     <th style={{textAlign: 'right'}}>Ações</th>
                                 </tr>
                             </thead>
@@ -145,7 +145,7 @@ export default function SupplierPage() {
                                                     {f.status ? "Ativo" : "Inativo"}
                                                 </span>
                                             </td>
-                                            <td style={{fontWeight: 600}}>{f.nome}</td>
+                                            <td style={{fontWeight: 600}}>{f.name}</td>
                                             <td style={{textAlign: "right"}}>
                                                 <button className="action-btn edit-btn" title="Editar" onClick={() => handleOpenModal(f)}>
                                                     Editar
@@ -178,8 +178,8 @@ export default function SupplierPage() {
                                     <input 
                                         className="form-input" 
                                         required 
-                                        value={formData.nome}
-                                        onChange={e => setFormData({...formData, nome: e.target.value})}
+                                        value={formData.name}
+                                        onChange={e => setFormData({...formData, name: e.target.value})}
                                     />
                                 </div>
                             </div>

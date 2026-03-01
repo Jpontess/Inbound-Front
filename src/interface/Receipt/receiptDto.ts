@@ -1,27 +1,26 @@
 import type { Supplier } from "../Supplier/supplier";
-import type { User } from "../User/User";
 
 export interface Receipt {
     _id?: string;
-    fornecedor?: Supplier; 
-    nomeFornecedor?: string
-    usuario?: User;
+    supplier?: Supplier; 
+    supplierName?: string
+    usuario?: string;
     nomeUsuario?: string       
-    placa?: string;
-    notaFiscal?: string;
-    pesoNota?: number;
-    pesoBalanca?: number;
+    licensePlate?: string;
+    invoiceNumber?: string;
+    invoiceWeight?: number;
+    scaleWeight?: number;
     
     
-    dataAgendamento?: string;
-    dataChegada?: string;
-    dataInicio?: string;
-    dataFim?: string;
+    schedulingDate?: string;
+    arrivalDate?: string;
+    startDate?: string;
+    endDate?: string;
     
-    tempoEsperaMin?: number;
-    tempoExecucaoMin?: number;
-    tempoPermanenciaMin?: number;
+    waitTimeMin?: number;
+    executionTimeMin?: number;  
+    stayTimeMin?: number;
 
     status?: "Agendado" | "Aguardando" | "Conferindo" | "Finalizado" | "Divergencia";
-    obs?: string;
+    notes?: string;
 }

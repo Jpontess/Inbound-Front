@@ -65,3 +65,13 @@ img{
    margin-inline-start: 30px;
    margin-bottom: 13%;
 }
+
+aside button{
+    margin-top: 90%;
+    width: auto;
+    background-color: #1E293B;
+}
+
+aside button:hover{
+    background-color: #d9224a;
+}

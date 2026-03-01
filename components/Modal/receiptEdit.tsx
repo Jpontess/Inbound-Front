@@ -5,6 +5,7 @@ import "./styles.css"
 interface Props {
     data: Receipt;
     onClose: () => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onConfirm: (dadosAtualizados: any) => void;
 }
 
@@ -19,16 +20,16 @@ export default function ReceiptEdit({ data, onClose, onConfirm }: Props) {
     
     // Inicializamos o state com os dados atuais do veículo
     const [form, setForm] = useState({
-        placa: data.placa || "",
-        notaFiscal: data.notaFiscal || "",
+        placa: data.licensePlate || "",
+        notaFiscal: data.invoiceNumber || "",
         status: data.status,
-        pesoNota: data.pesoNota || 0,
-        pesoBalanca: data.pesoBalanca || 0,
-        obs: data.obs || "",
+        pesoNota: data.invoiceWeight || 0,
+        pesoBalanca: data.scaleWeight || 0,
+        obs: data.notes || "",
         // Datas (tratamento para não quebrar se vier null)
-        dataChegada: formatDateForInput(data.dataChegada),
-        dataInicio: formatDateForInput(data.dataInicio),
-        dataFim: formatDateForInput(data.dataFim),
+        dataChegada: formatDateForInput(data.arrivalDate),
+        dataInicio: formatDateForInput(data.startDate),
+        dataFim: formatDateForInput(data.endDate),
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -42,14 +43,11 @@ export default function ReceiptEdit({ data, onClose, onConfirm }: Props) {
     };
 
     const handleSave = () => {
-        // Precisamos converter as datas de volta para objeto Date ou string ISO completa se o backend esperar
-        // O backend geralmente aceita string ISO.
         onConfirm({
             ...form,
-            // Opcional: Converter datas vazias para null se necessário
-            dataChegada: form.dataChegada ? new Date(form.dataChegada) : null,
-            dataInicio: form.dataInicio ? new Date(form.dataInicio) : null,
-            dataFim: form.dataFim ? new Date(form.dataFim) : null,
+            arrivalDate: form.dataChegada ? new Date(form.dataChegada): null ,
+            startDate: form.dataInicio ? new Date(form.dataInicio) : null,
+            endDate: form.dataFim ? new Date(form.dataFim) : null,
         });
     };
 
@@ -68,7 +66,7 @@ export default function ReceiptEdit({ data, onClose, onConfirm }: Props) {
 
                 <div className="form-group">
                     <label>Fornecedor (Apenas Leitura)</label>
-                    <input className="receipt-input" disabled value={data.fornecedor?.nome || "---"} style={{background: '#f1f5f9'}} />
+                    <input className="receipt-input" disabled value={data.supplier?.name || "---"} style={{background: '#f1f5f9'}} />
                 </div>
 
                 {/* GRIDS PARA ORGANIZAR */}

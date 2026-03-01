@@ -1,4 +1,4 @@
 export class FinishReceiptDto {
-    pesoBalanca!: number;
-    obs!: string;
+    scaleWeight!: number;
+    notes!: string;
 }

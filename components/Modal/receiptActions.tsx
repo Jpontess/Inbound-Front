@@ -5,20 +5,21 @@ import type { FinishReceiptDto } from "../../src/interface/Receipt/finishReceipt
 // Interface genérica para suportar diferentes tipos de dados nos formulários
 interface ReceiptActionProps<T> {
     onClose: () => void;
-    onConfirm: (form: T) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onConfirm: (form: any) => void; // mudei para any
     data?: T;
 }
 
 // --- FORMULÁRIO DE INICIAR (PLAY) ---
 export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProps<StartReceiptDto>) {
     const [form, setForm] = useState<StartReceiptDto>({
-        notaFiscal: data?.notaFiscal || "",
-        pesoNota: data?.pesoNota || 0
+        invoiceNumber: data?.invoiceNumber || "",
+        invoiceWeight: data?.invoiceWeight || 0
     });
 
     const handleConfirm = () => {
         // Validação básica antes de enviar
-        if (!form.notaFiscal) {
+        if (!form.invoiceNumber) {
             alert("Por favor, preencha a Nota Fiscal.");
             return;
         }
@@ -38,8 +39,8 @@ export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProp
                         className="receipt-input" 
                         type="text"
                         placeholder="Digite o número da NF"
-                        value={form.notaFiscal}
-                        onChange={e => setForm({...form, notaFiscal: e.target.value})}
+                        value={form.invoiceNumber}
+                        onChange={e => setForm({...form, invoiceNumber: e.target.value})}
                     />
                 </div>
                 <div className="form-group">
@@ -48,11 +49,9 @@ export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProp
                         className="receipt-input" 
                         type="number"
                         placeholder="0"
-                        // Lógica para não exibir 0 quando o campo for focado/apagado
-                        value={form.pesoNota === 0 ? "" : form.pesoNota}
+                        value={form.invoiceWeight === 0 ? "" : form.invoiceWeight}
                         onChange={e => {
-                            const val = e.target.value;
-                            setForm({...form, pesoNota: val === "" ? 0 : Number(val)});
+                            setForm({...form, invoiceWeight: Number(e.target.value)});
                         }}
                     />
                 </div>
@@ -70,8 +69,8 @@ export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProp
 // --- FORMULÁRIO DE FINALIZAR (STOP) ---
 export function FinishReceiptForm({ onClose, onConfirm }: ReceiptActionProps<FinishReceiptDto>) {
     const [form, setForm] = useState<FinishReceiptDto>({ 
-        pesoBalanca: 0, 
-        obs: "" 
+        scaleWeight: 0, 
+        notes: "" 
     });
 
     return (
@@ -87,10 +86,10 @@ export function FinishReceiptForm({ onClose, onConfirm }: ReceiptActionProps<Fin
                         className="receipt-input" 
                         type="number"
                         placeholder="Digite o peso final"
-                        value={form.pesoBalanca === 0 ? "" : form.pesoBalanca}
+                        value={form.scaleWeight === 0 ? "" : form.scaleWeight}
                         onChange={e => {
                             const val = e.target.value;
-                            setForm({...form, pesoBalanca: val === "" ? 0 : Number(val)});
+                            setForm({...form, scaleWeight: val === "" ? 0 : Number(val)});
                         }}
                     />
                 </div>
@@ -100,8 +99,8 @@ export function FinishReceiptForm({ onClose, onConfirm }: ReceiptActionProps<Fin
                         className="receipt-input" 
                         rows={3}
                         placeholder="Alguma divergência ou detalhe?"
-                        value={form.obs}
-                        onChange={e => setForm({...form, obs: e.target.value})}
+                        value={form.notes}
+                        onChange={e => setForm({...form, notes: e.target.value})}
                     />
                 </div>
             </div>

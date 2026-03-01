@@ -1,4 +1,4 @@
 export class StartReceiptDto {
-    notaFiscal!: string;
-    pesoNota!: number;
+    invoiceNumber!: string;
+    invoiceWeight!: number;
 }

@@ -1,16 +1,16 @@
 export interface UpdateReceiptDto {
-    fornecedor?: string 
+    supplier?: string 
     usuario?: string
-    placa?: string
-    notaFiscal?: string
-    pesoNota?:number
-    pesoBalanca?: number
-    obs?:string
-    dataChegada?: Date
-    dataFim?: Date
-    dataInicio?: Date
-    tempoEsperaMin?: number
-    tempoExecusaoMin?: number
-    tempoPemanenciaMin?: number
+    licensePlate?: string
+    invoiceNumber?: string
+    invoiceWeight?:number
+    scaleWeight?: number
+    notes?:string   
+    arrivalDate?: Date | null
+    endDate?: Date | null
+    startDate?: Date | null
+    waitTimeMin?: number
+    executionTimeMin?: number
+    stayTimeMin?: number
     status?: string
 }

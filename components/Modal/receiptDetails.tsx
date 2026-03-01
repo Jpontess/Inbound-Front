@@ -31,7 +31,7 @@ export default function ReceiptDetails({ data, onClose }: Props) {
                         <div className="detail-group">
                             <label>Fornecedor</label>
                             {/* Backend retorna objeto fornecedor populado */}
-                            <span className="value-lg">{data.nomeFornecedor || "---"}</span>
+                            <span className="value-lg">{data.supplierName || "---"}</span>
                         </div>
                         <div className="detail-group">
                             <label>Status Atual</label>
@@ -44,11 +44,11 @@ export default function ReceiptDetails({ data, onClose }: Props) {
                     <div className="details-grid-3">
                         <div className="detail-group">
                             <label>Peso Nota (kg) </label>
-                            <span className="value-md">{data.pesoNota || "---"}</span>
+                            <span className="value-md">{data.invoiceWeight || "---"}</span>
                         </div>
                         <div className="detail-group">
                             <label>Nota Fiscal</label>
-                            <span className="value-md">{data.notaFiscal || "---"}</span>
+                            <span className="value-md">{data.invoiceNumber || "---"}</span>
                         </div>
                         <div className="detail-group">
                             <label>Responsável</label>
@@ -65,15 +65,15 @@ export default function ReceiptDetails({ data, onClose }: Props) {
                 <div className="details-grid-2">
                     <div className="detail-item">
                         <span className="label">Chegada</span>
-                        <span className="value">{formatTime(data.dataChegada)}</span>
+                        <span className="value">{formatTime(data.arrivalDate)}</span>
                     </div>
                     <div className="detail-item">
                         <span className="label">Início Recebimento</span>
-                        <span className="value">{formatTime(data.dataInicio)}</span>
+                        <span className="value">{formatTime(data.startDate)}</span>
                     </div>
                     <div className="detail-item">
                         <span className="label">Fim Recebimento</span>
-                        <span className="value">{formatTime(data.dataFim)}</span>
+                        <span className="value">{formatTime(data.endDate)}</span>
                     </div>
                 </div>
 
@@ -84,23 +84,23 @@ export default function ReceiptDetails({ data, onClose }: Props) {
                 <div className="kpi-grid">
                     <div className="kpi-card">
                         <span className="kpi-label">Tempo de Espera</span>
-                        <span className="kpi-value text-orange">{data.tempoEsperaMin != null ? `${data.tempoEsperaMin} Min` : "--"}</span> 
+                        <span className="kpi-value text-orange">{data.waitTimeMin!= null ? `${data.waitTimeMin} Min` : "--"}</span> 
                     </div>
                     <div className="kpi-card">
                         <span className="kpi-label">Duração Recebimento</span>
-                        <span className="kpi-value text-blue">{data.tempoExecucaoMin != null ? `${data.tempoExecucaoMin} Min` : "--"}</span>
+                        <span className="kpi-value text-blue">{data.executionTimeMin != null ? `${data.executionTimeMin} Min` : "--"}</span>
                     </div>
                     <div className="kpi-card">
                         <span className="kpi-label">Permanência Total</span>
-                        <span className="kpi-value text-dark">{data.tempoPermanenciaMin != null ? `${data.tempoPermanenciaMin} Min` : "--"}</span>
+                        <span className="kpi-value text-dark">{data.stayTimeMin != null ? `${data.stayTimeMin} Min` : "--"}</span>
                     </div>
                 </div>
 
                 {/* Seção Extra: Observações e Pesos */}
-                {(data.obs || data.pesoBalanca) && (
+                {(data.notes|| data.scaleWeight) && (
                     <div style={{marginTop: 20, background: '#f8fafc', padding: 10, borderRadius: 6}}>
-                        <p style={{fontSize: '0.85rem', margin: 0}}><strong>Peso Balança:</strong> {data.pesoBalanca} kg</p>
-                        <p style={{fontSize: '0.85rem', margin: '5px 0 0 0'}}><strong>Obs:</strong> {data.obs}</p>
+                        <p style={{fontSize: '0.85rem', margin: 0}}><strong>Peso Balança:</strong> {data.scaleWeight} kg</p>
+                        <p style={{fontSize: '0.85rem', margin: '5px 0 0 0'}}><strong>Obs:</strong> {data.notes}</p>
                     </div>
                 )}
             </div>

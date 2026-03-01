@@ -1,7 +1,33 @@
 import './login.css'
 import logo from "../Sidebar/assets/livUpLogo.png"
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import { AuthService } from '../../src/services/Auth/AuthServices';
+
 
 export function Login() {
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    async function  handleLogin() {
+        try{
+            const response = await AuthService.singIn({email, password})
+            const { token } = response.data 
+            
+            localStorage.setItem('authToken', token);
+            alert('Bem vindo ao Gestão Log!');
+            navigate('/home');
+        }
+        catch(error)
+        {
+            console.log(error);
+            alert('Erro ao fazer login');   
+        }
+    
+    }
+
+
     return (
         <div className='container'>
             <div className="login-box">
@@ -17,10 +43,18 @@ export function Login() {
                         </div>
                         <p className="system-desc">Controle de Fluxo e Recebimento</p>
                         <div className='input-group'>
-                            <input type="email" placeholder="Email"/>
-                            <input type="password" placeholder="Senha" />
+                            <input 
+                            type="email" 
+                            placeholder="Email" 
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)}/>
+                            <input 
+                            type="password" 
+                            placeholder="Senha" 
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)} />
                         </div>
-                        <button type="submit">Entrar</button>
+                        <button onClick={handleLogin} type="submit">Entrar</button>
                     </div>
                 </div>
             </div>
