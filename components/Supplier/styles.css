@@ -37,6 +37,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
+    width: 180px;
 }
 
 .btn-add:hover { background-color: #334155; }
@@ -86,6 +87,7 @@
     padding: 6px;
     border-radius: 4px;
     transition: all 0.2s;
+    width: 80px;
 }
 
 .edit-btn { color: #3b82f6; }
@@ -141,4 +143,7 @@
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
+}
+.btn-close {
+    width: 50px;
 }
