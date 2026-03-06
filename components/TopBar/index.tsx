@@ -1,6 +1,27 @@
+import { useEffect, useState } from "react";
 import "./styles.css"
+import { jwtDecode } from "jwt-decode";
+import { type UserDecod }  from "../../src/interface/Auth/AuthDecodUser"
 
 export default function Topbar() {
+    const [userName, setUserName] = useState<string>("");
+
+    useEffect(() => {
+        const token = localStorage.getItem("authToken");
+
+        if (token){
+            try{
+                const decoded = jwtDecode<UserDecod>(token);
+                
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setUserName(decoded.name);
+            }
+            catch (Error) {
+                console.log("Token inválido ", Error)
+            }
+        }
+    }, [])
+
     return (
         <header className="topbar">
             {/* LADO ESQUERDO: Logo e Menu Mobile */}
@@ -12,8 +33,8 @@ export default function Topbar() {
             <div className="topbar__right">
                 <div className="user-profile">
                     <div className="user-info">
-                        <span className="user-name">João Pedro</span>
-                        <span className="user-role">Gestor</span>
+                        <span className="user-name">{userName}</span>
+                        <span className="user-role">Online</span>
                     </div>
                     <div className="user-avatar">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

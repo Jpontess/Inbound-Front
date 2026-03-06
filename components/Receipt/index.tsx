@@ -97,8 +97,8 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
 
         try {
             const payload: CreateReceiptDto = {
-                fornecedor: form.fornecedorId,
-                placa: form.placa
+                supplier_Id: form.fornecedorId,
+                licensePlate: form.placa,
             };
 
             await ReceiptService.create(payload);

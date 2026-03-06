@@ -20,7 +20,7 @@ export default function Toolbar({ busca, setBusca, data, setData }: ToolbarProps
                     
                     <input 
                         type="text" 
-                        placeholder="Buscar Fornecedor, NF..." 
+                        placeholder="Buscar Fornecedor, NF ou status..." 
                         className="search-input"
                         value={busca}
                         onChange={(e) => setBusca(e.target.value)} // Avisa a Home que mudou

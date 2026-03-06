@@ -6,7 +6,7 @@ import type { Receipt } from "../../src/interface/Receipt/receiptDto";
 
 interface Supplier {
     _id: string;
-    nome: string;
+    name: string;
 }
 
 export default function Scheduling() {
@@ -18,7 +18,7 @@ export default function Scheduling() {
     // Estados do Formulário
     const [selectedFornecedorId, setSelectedFornecedorId] = useState("");
     const [novaData, setNovaData] = useState("");
-    const [novoPesoNota, setNovoPesoNota] = useState<number | "">("");
+    const [novoPesoNota, setNovoPesoNota] = useState<number | "" >("");
 
     // --- CARREGAR DADOS ---
     const loadInitialData = async () => {
@@ -50,9 +50,9 @@ export default function Scheduling() {
 
         try {
             await ReceiptService.createSchedule({
-                fornecedor: selectedFornecedorId,
-                dataAgendamento: novaData,
-                pesoNota: Number(novoPesoNota)
+                supplier_Id: selectedFornecedorId,
+                schedulingDate: novaData,
+                invoiceWeight: Number(novoPesoNota)
             });
 
             alert("Agendamento realizado com sucesso!");
@@ -95,9 +95,9 @@ export default function Scheduling() {
                             {agendamentos.map((item) => {
     // 1. Resolve o problema do Invalid Date: 
     // Se a data vier como "2026-02-25", adicionamos o horário para evitar problemas de fuso
-    const dateStr = item.dataAgendamento?.includes('T') 
-        ? item.dataAgendamento 
-        : `${item.dataAgendamento}T12:00:00`;
+    const dateStr = item.schedulingDate?.includes('T') 
+        ? item.schedulingDate 
+        : `${item.schedulingDate}T12:00:00`;
     
     const dateObj = new Date(dateStr);
 
@@ -122,12 +122,12 @@ export default function Scheduling() {
             
             {/* Informações */}
             <div className="info-col">
-                <h4>{item.nomeFornecedor || "Fornecedor não identificado"}</h4>
+                <h4>{item.supplierName || "Fornecedor não identificado"}</h4>
                 <div className="meta-info">
                     <span className="weekday">{semana}</span>
                     <span className="separator">•</span>
                     <span className="time-badge">
-                        {item.pesoNota} Kg
+                        {item.invoiceWeight} Kg
                     </span>
                 </div>
             </div>
@@ -159,7 +159,7 @@ export default function Scheduling() {
                                     >
                                         <option value="">Selecione um fornecedor</option>
                                         {fornecedores.map(f => (
-                                            <option key={f._id} value={f._id}>{f.nome}</option>
+                                            <option key={f._id} value={f._id}>{f.name}</option>
                                         ))}
                                     </select>
                                 </div>

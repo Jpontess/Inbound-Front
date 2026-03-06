@@ -4,7 +4,7 @@ export interface Receipt {
     _id?: string;
     supplier?: Supplier; 
     supplierName?: string
-    usuario?: string;
+    UserName?: string;
     nomeUsuario?: string       
     licensePlate?: string;
     invoiceNumber?: string;

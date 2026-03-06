@@ -1,6 +1,7 @@
 export interface CreateReceiptDto {
-    supplier: string
+    supplier_Id: string
     licensePlate?: string;
     arrivalDate?: string;
     invoiceWeight?: number;
+    schedulingDate?: string
 }

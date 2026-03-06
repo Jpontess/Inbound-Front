@@ -9,9 +9,13 @@ import type { Receipt } from "../../src/interface/Receipt/receiptDto";
 import type { Modal } from "../../src/interface/recebimento"; 
 import type { ReceiptForm } from "../../src/interface/Receipt/receiptForm";
 import { getPayload } from "../../src/services/Auth/auth.payload";
+import { jwtDecode } from "jwt-decode";
+import type { UserDecod } from "../../src/interface/Auth/AuthDecodUser";
 
 export default function Home() {
     getPayload()
+
+    const [UserLogado, setUserLogado] = useState<string>("")
 
     const [modalAberto, setModalAberto] = useState<Modal>(null);
     const [veiculoSelecionado, setVeiculoSelecionado] = useState<Receipt | null>(null);
@@ -38,6 +42,20 @@ export default function Home() {
     };
 
     useEffect(() => {
+        const token = localStorage.getItem("authToken");
+
+        if (token){
+            try {
+                const decoded = jwtDecode<UserDecod>(token);
+
+                setUserLogado(decoded.name)
+            } catch (error) {
+                console.log("Token inválido ", error)
+            }
+        }
+    }, [])
+
+    useEffect(() => {
         loadData();
     }, []);
 
@@ -59,8 +77,9 @@ export default function Home() {
             // Lógica de INICIAR
             if (modalAberto === 'iniciar') {
                 await ReceiptService.start(veiculoSelecionado._id, {
-                    notaFiscal: dadosForm!.invoiceNumber,
-                    pesoNota: Number(dadosForm!.invoiceWeight) 
+                    invoiceNumber: dadosForm!.invoiceNumber,
+                    invoiceWeight: Number(dadosForm!.invoiceWeight),
+                    UserName: UserLogado
                 });
                 alert("Iniciado com sucesso!");
             }
@@ -98,7 +117,8 @@ export default function Home() {
         const nomeFornecedor = v.supplierName || ""; 
         const matchTexto = nomeFornecedor.toLowerCase().includes(busca.toLowerCase()) || 
                            (v.invoiceNumber || "").includes(busca) ||
-                           (v.licensePlate || "").toLowerCase().includes(busca.toLowerCase());
+                           (v.licensePlate || "").toLowerCase().includes(busca.toLowerCase()) ||
+                           (v.status || "").includes(busca);
         const dataParaFiltro = v.arrivalDate || v.schedulingDate || "";
         const dataV = dataParaFiltro.substring(0, 10); // Extrai apenas a parte da data (YYYY-MM-DD)
         const matchData = dataFiltro ? dataV === dataFiltro : true;

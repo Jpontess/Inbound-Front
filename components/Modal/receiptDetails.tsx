@@ -53,7 +53,7 @@ export default function ReceiptDetails({ data, onClose }: Props) {
                         <div className="detail-group">
                             <label>Responsável</label>
                             {/* Backend retorna objeto usuario populado */}
-                            <span className="value-md">{data.nomeUsuario || "---"}</span>
+                            <span className="value-md">{data.UserName || "---"}</span>
                         </div>
                     </div>
                 </div>
