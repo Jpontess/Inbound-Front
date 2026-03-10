@@ -24,7 +24,7 @@ export default function SideBar()
                         <a href="/home">Página de início</a>
                     </li>
                     <li>
-                        <a href="/receipt">Recebimento</a>
+                        <a href="/receipt">Portaria</a>
                     </li>
                     <li>
                         <a href="/schedule">Agendamento</a>
