@@ -14,6 +14,9 @@ export default function Scheduling() {
     const [agendamentos, setAgendamentos] = useState<Receipt[]>([]);
     const [fornecedores, setFornecedores] = useState<Supplier[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [buscarFornecedor, setBuscarFornecedor] = useState("");
+    const [mostrarLista, setMostrarLista] = useState(false);
+
 
     // Estados do Formulário
     const [selectedFornecedorId, setSelectedFornecedorId] = useState("");
@@ -39,6 +42,7 @@ export default function Scheduling() {
         }
     };
 
+
     useEffect(() => {
         loadInitialData();
     }, []);
@@ -55,13 +59,11 @@ export default function Scheduling() {
                 invoiceWeight: Number(novoPesoNota)
             });
 
-            alert("Agendamento realizado com sucesso!");
-            
-            // Limpa formulário e recarrega lista
             setSelectedFornecedorId("");
             setNovaData("");
             setNovoPesoNota("");
             loadInitialData();
+            console.log(handleSave)
         } catch (error) {
             alert("Erro ao salvar agendamento." + error);
         }
@@ -77,6 +79,22 @@ export default function Scheduling() {
             }
         }
     };
+    
+    const handleBuscaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // Atualiza o que o usuário está digitando
+        setBuscarFornecedor(e.target.value); 
+        
+        // Abre a lista suspensa
+        setMostrarLista(true); 
+        
+        // Limpa o ID do fornecedor, já que o usuário está buscando um novo
+        setSelectedFornecedorId(""); 
+    };
+   
+
+    const fornecedoresFiltrados = fornecedores.filter(filtro => 
+        filtro.name.toLowerCase().includes(buscarFornecedor.toLowerCase())
+    );
 
     return (
         <div className="scheduling-page">
@@ -87,60 +105,54 @@ export default function Scheduling() {
                 </div>
 
                 <div className="scheduling-grid">
-                    {/* LISTA */}
                     <div className="list-section">
                         <h3 className="section-title">Próximos ({agendamentos.length})</h3>
                         
                         <div className="cards-wrapper">
-                            {agendamentos.map((item) => {
-    // 1. Resolve o problema do Invalid Date: 
-    // Se a data vier como "2026-02-25", adicionamos o horário para evitar problemas de fuso
-    const dateStr = item.schedulingDate?.includes('T') 
-        ? item.schedulingDate 
-        : `${item.schedulingDate}T12:00:00`;
-    
-    const dateObj = new Date(dateStr);
+                         {agendamentos.map((item) => {
+                            const apenasData = item.schedulingDate?.split('T')[0];
+                            
+                            const dateObj = new Date(`${apenasData}T12:00:00`);
 
-    // 2. Verifica se a conversão deu certo antes de renderizar
-    const isValid = !isNaN(dateObj.getTime());
+                            const isValid = !isNaN(dateObj.getTime());
 
-    const dia = isValid ? dateObj.getDate() : "--";
-    const mes = isValid 
-        ? dateObj.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '') 
-        : "ERR";
-    const semana = isValid 
-        ? dateObj.toLocaleDateString('pt-BR', { weekday: 'long' }) 
-        : "Data Inválida";
+                            const dia = isValid ? String(dateObj.getDate()).padStart(2, '0') : "--";
+                            const mes = isValid 
+                                ? dateObj.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.', '') 
+                                : "ERR";
+                            const semana = isValid 
+                                ? dateObj.toLocaleDateString('pt-BR', { weekday: 'long' }) 
+                                : "Data Inválida";
 
-    return (
-        <div key={item._id} className="schedule-card">
-            {/* Box da Data */}
-            <div className="date-badge">
-                <span className="day">{dia}</span>
-                <span className="month">{mes}</span>
-            </div>
-            
-            {/* Informações */}
-            <div className="info-col">
-                <h4>{item.supplierName || "Fornecedor não identificado"}</h4>
-                <div className="meta-info">
-                    <span className="weekday">{semana}</span>
-                    <span className="separator">•</span>
-                    <span className="time-badge">
-                        {item.invoiceWeight} Kg
-                    </span>
-                </div>
-            </div>
+                                return (
+                                <div key={item._id} className="schedule-card">
+                                    {/* Box da Data */}
+                                    <div className="date-badge">
+                                        <span className="day">{dia}</span>
+                                        <span className="month">{mes}</span>
+                                    </div>
+                                    
+                                    {/* Informações */}
+                                        <div className="info-col">
+                                            <h4>{item.supplierName || "Fornecedor não identificado"}</h4>
+                                            <div className="meta-info">
+                                                <span className="weekday">{semana}</span>
+                                                <span className="separator">•</span>
+                                                <span className="time-badge">
+                                                    {item.invoiceWeight} Kg
+                                                </span>
+                                            </div>
+                                        </div>
 
-            {/* Restante do seu código (Status e Botão Remover) */}
-            <button className="btn-remove-icon" onClick={() => handleDelete(item._id!)}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                </svg>
-            </button>
-        </div>
-    );
-})}
+                                        {/* Restante do seu código (Status e Botão Remover) */}
+                                        <button className="btn-remove-icon" onClick={() => handleDelete(item._id!)}>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -150,18 +162,41 @@ export default function Scheduling() {
                             <h3>Novo Agendamento</h3>
                             <form onSubmit={handleSave}>
                                 <div className="input-group">
-                                    <label>Fornecedor</label>
-                                    <select 
+                                <label>Fornecedor</label>
+                               <input 
+                                        type="text"
                                         className="custom-input"
-                                        required
-                                        value={selectedFornecedorId}
-                                        onChange={e => setSelectedFornecedorId(e.target.value)}
-                                    >
-                                        <option value="">Selecione um fornecedor</option>
-                                        {fornecedores.map(f => (
-                                            <option key={f._id} value={f._id}>{f.name}</option>
-                                        ))}
-                                    </select>
+                                        placeholder={isLoading ? "Carregando..." : "Digite para buscar..."}
+                                        value={buscarFornecedor}
+                                            onChange={handleBuscaChange}
+                                        onFocus={() => setMostrarLista(true)}
+                                        disabled={isLoading}
+                                        required 
+                                    />
+                                    
+                                    {mostrarLista && (
+                                        <ul className="autocomplete-list">
+                                            {isLoading && <li className="autocomplete-item disabled">Carregando...</li>}
+                                            
+                                            {!isLoading && fornecedoresFiltrados.length === 0 && (
+                                                <li className="autocomplete-item disabled">Nenhum fornecedor encontrado</li>
+                                            )}
+
+                                           {fornecedoresFiltrados.map((fornecedor) => (
+                                                <li 
+                                                    key={fornecedor._id} 
+                                                    className="autocomplete-item"
+                                                    onClick={() => {
+                                                        setSelectedFornecedorId(fornecedor._id);
+                                                        setBuscarFornecedor(fornecedor.name);
+                                                        setMostrarLista(false);
+                                                    }}
+                                                >
+                                                    {fornecedor.name}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
 
                                 <div style={{display: 'flex', gap: 15}}>

@@ -16,7 +16,6 @@ export function Login() {
             const { token } = response.data 
             
             localStorage.setItem('authToken', token);
-            alert('Bem vindo ao Gestão Log!');
             navigate('/home');
         }
         catch(error)
