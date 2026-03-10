@@ -33,7 +33,21 @@ export default function Home() {
         try {
             setIsLoading(true);
             const data = await ReceiptService.getAll();
-            setReceipts(data);
+
+            const endStatus = ["Finalizado", "Divergencia"];
+
+            const ordenar = [...data].sort((a, b) => {
+                const aNoFinal = endStatus.includes(a.status || "");
+                const bNoFinal = endStatus.includes(b.status || "");
+
+                if (aNoFinal && !bNoFinal) return 1;
+                if (!aNoFinal && bNoFinal) return -1;
+
+                return 0;
+            })
+
+
+            setReceipts(ordenar);
         } catch (error) {
             console.error("Erro ao buscar dados:", error);
         } finally {
@@ -81,7 +95,8 @@ export default function Home() {
                     invoiceWeight: Number(dadosForm!.invoiceWeight),
                     UserName: UserLogado
                 });
-                alert("Iniciado com sucesso!");
+                // Criar notificações de sucesso.
+
             }
             // Lógica de FINALIZAR
             else if (modalAberto === 'finalizar') {
@@ -89,18 +104,18 @@ export default function Home() {
                     scaleWeight: Number(dadosForm!.scaleWeight),
                     notes: dadosForm!.notes
                 });
-                alert("Finalizado com sucesso!");
+                // Criar notificações de sucesso.                
             }
             // Lógica de DELETAR
             else if (modalAberto === 'deletar') {
                 await ReceiptService.delete(veiculoSelecionado._id);
-                alert("Deletado com sucesso!");
+                // Criar notificações de sucesso.
             }
             else if(modalAberto === "entrada") {
                 await ReceiptService.entryByPlate(veiculoSelecionado._id, {
                     placa: dadosForm!.licensePlate,
                 });
-                alert("Registrado entrada de veículo com sucesso!");
+                // Criar notificações de sucesso.
             }
 
             // Atualiza a tabela e fecha o modal
@@ -169,7 +184,6 @@ export default function Home() {
                                                 {v.status}
                                             </span>
                                         </td>
-                                        {/* Acessando nome dentro do objeto fornecedor */}
                                         <td className="fw-bold">{v.supplierName || "---"}</td>
                                         <td>{v.invoiceNumber || "-"}</td>
                                         <td>
