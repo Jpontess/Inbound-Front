@@ -56,16 +56,16 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
 
 
     const fornecedoresFiltrados = listaFornecedores.filter(f => 
-        f.name.toLowerCase().includes(buscaFornecedor.toLowerCase())
+        f.supplier_name.toLowerCase().includes(buscaFornecedor.toLowerCase())
     );
 
     const selecionarFornecedor = (fornecedor: Supplier) => {
         setForm(prev => ({ 
             ...prev, 
-            fornecedorId: fornecedor._id, 
-            fornecedorname: fornecedor.name 
+            fornecedorId: fornecedor.id, 
+            fornecedorname: fornecedor.supplier_name 
         }));
-        setBuscaFornecedor(fornecedor.name); 
+        setBuscaFornecedor(fornecedor.supplier_name); 
         setMostrarSugestoes(false); 
     };
 
@@ -158,11 +158,11 @@ export default function NewReceipt({ onSalvar }: NewReceiptProps) {
 
                                     {fornecedoresFiltrados.map((fornecedor) => (
                                         <li 
-                                            key={fornecedor._id} 
+                                            key={fornecedor.id} 
                                             className="autocomplete-item"
                                             onClick={() => selecionarFornecedor(fornecedor)}
                                         >
-                                            {fornecedor.name}
+                                            {fornecedor.supplier_name}
                                         </li>
                                     ))}
                                 </ul>

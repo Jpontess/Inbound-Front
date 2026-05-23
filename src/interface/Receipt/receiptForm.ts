@@ -1,11 +1,11 @@
 export class ReceiptForm {
-    invoiceNumber!: string;
-    invoiceWeight!: number
-    scaleWeight!: number;
-    notes!: string;
-    licensePlate!: string;
+    invoice_number?: string;
+    invoice_weight?: number
+    scale_weight?: number;
+    notes?: string;
+    license_plate?: string;
 }
 
 export class EntryForm {
-    licensePlate!: string;
+    license_plate?: string;
 }

@@ -110,7 +110,7 @@ export default function Scheduling() {
                         
                         <div className="cards-wrapper">
                          {agendamentos.map((item) => {
-                            const apenasData = item.schedulingDate?.split('T')[0];
+                            const apenasData = item.scheduling_date?.split('T')[0];
                             
                             const dateObj = new Date(`${apenasData}T12:00:00`);
 
@@ -134,12 +134,12 @@ export default function Scheduling() {
                                     
                                     {/* Informações */}
                                         <div className="info-col">
-                                            <h4>{item.supplierName || "Fornecedor não identificado"}</h4>
+                                            <h4>{item.supplier_name || "Fornecedor não identificado"}</h4>
                                             <div className="meta-info">
                                                 <span className="weekday">{semana}</span>
                                                 <span className="separator">•</span>
                                                 <span className="time-badge">
-                                                    {item.invoiceWeight} Kg
+                                                    {item.invoice_weight} Kg
                                                 </span>
                                             </div>
                                         </div>

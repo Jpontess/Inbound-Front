@@ -3,23 +3,23 @@ import type { Supplier } from "../Supplier/supplier";
 export interface Receipt {
     _id?: string;
     supplier?: Supplier; 
-    supplierName?: string
-    UserName?: string;
+    supplier_name?: string
+    user_name?: string;
     nomeUsuario?: string       
-    licensePlate?: string;
-    invoiceNumber?: string;
-    invoiceWeight?: number;
-    scaleWeight?: number;
+    license_plate?: string;
+    invoice_number?: string;
+    invoice_weight?: number;
+    scale_weight?: number;
     
     
-    schedulingDate?: string;
-    arrivalDate?: string;
-    startDate?: string;
-    endDate?: string;
+    scheduling_date?: string;
+    arrival_date?: string;
+    start_date?: string;
+    end_date?: string;
     
-    waitTimeMin?: number;
-    executionTimeMin?: number;  
-    stayTimeMin?: number;
+    wait_time_min?: number;
+    execution_time_min?: number;  
+    stay_time_min?: number;
 
     status?: "Agendado" | "Aguardando" | "Conferindo" | "Finalizado" | "Divergencia";
     notes?: string;

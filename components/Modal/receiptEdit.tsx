@@ -20,16 +20,16 @@ export default function ReceiptEdit({ data, onClose, onConfirm }: Props) {
     
     // Inicializamos o state com os dados atuais do veículo
     const [form, setForm] = useState({
-        placa: data.licensePlate || "",
-        notaFiscal: data.invoiceNumber || "",
+        placa: data.license_plate || "",
+        notaFiscal: data.invoice_number || "",
         status: data.status,
-        pesoNota: data.invoiceWeight || 0,
-        pesoBalanca: data.scaleWeight || 0,
+        pesoNota: data.invoice_weight || 0,
+        pesoBalanca: data.scale_weight || 0,
         obs: data.notes || "",
         // Datas (tratamento para não quebrar se vier null)
-        dataChegada: formatDateForInput(data.arrivalDate),
-        dataInicio: formatDateForInput(data.startDate),
-        dataFim: formatDateForInput(data.endDate),
+        dataChegada: formatDateForInput(data.arrival_date),
+        dataInicio: formatDateForInput(data.start_date),
+        dataFim: formatDateForInput(data.end_date),
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -66,7 +66,7 @@ export default function ReceiptEdit({ data, onClose, onConfirm }: Props) {
 
                 <div className="form-group">
                     <label>Fornecedor (Apenas Leitura)</label>
-                    <input className="receipt-input" disabled value={data.supplier?.name || "---"} style={{background: '#f1f5f9'}} />
+                    <input className="receipt-input" disabled value={data.supplier?.supplier_name || "---"} style={{background: '#f1f5f9'}} />
                 </div>
 
                 {/* GRIDS PARA ORGANIZAR */}

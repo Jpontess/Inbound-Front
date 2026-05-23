@@ -3,13 +3,14 @@ import ReceiptEdit from "./receiptEdit"
 import { StartReceiptForm, FinishReceiptForm, DeleteReceiptConfirm } from "./receiptActions";
 import type { Receipt } from "../../src/interface/Receipt/receiptDto";
 import ReceiptEnter from "./receiptEnter";
+import type { ReceiptForm } from "../../src/interface/Receipt/receiptForm";
 
 interface ActionsModalsProps {
     isOpen: boolean;
     type: string | null; // 'visualizar' | 'iniciar' | 'finalizar' | 'deletar' | "entrada"
     veiculo: Receipt | null;
     onClose: () => void;
-    onConfirm: (dados: Receipt) => void;
+    onConfirm: (dados: ReceiptForm) => void;
 }
 
 export default function ActionsModals({ isOpen, type, veiculo, onClose, onConfirm}: ActionsModalsProps) {

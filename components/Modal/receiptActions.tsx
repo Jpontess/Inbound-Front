@@ -13,13 +13,13 @@ interface ReceiptActionProps<T> {
 // --- FORMULÁRIO DE INICIAR (PLAY) ---
 export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProps<StartReceiptDto>) {
     const [form, setForm] = useState<StartReceiptDto>({
-        invoiceNumber: data?.invoiceNumber || "",
-        invoiceWeight: data?.invoiceWeight || 0
+        invoice_number: data?.invoice_number || "",
+        invoice_weight: data?.invoice_weight || 0
     });
 
     const handleConfirm = () => {
         // Validação básica antes de enviar
-        if (!form.invoiceNumber) {
+        if (!form.invoice_number) {
             alert("Por favor, preencha a Nota Fiscal.");
             return;
         }
@@ -39,8 +39,8 @@ export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProp
                         className="receipt-input" 
                         type="text"
                         placeholder="Digite o número da NF"
-                        value={form.invoiceNumber}
-                        onChange={e => setForm({...form, invoiceNumber: e.target.value})}
+                        value={form.invoice_number}
+                        onChange={e => setForm({...form, invoice_number: e.target.value})}
                     />
                 </div>
                 <div className="form-group">
@@ -49,9 +49,9 @@ export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProp
                         className="receipt-input" 
                         type="number"
                         placeholder="0"
-                        value={form.invoiceWeight === 0 ? "" : form.invoiceWeight}
+                        value={form.invoice_weight === 0 ? "" : form.invoice_weight}
                         onChange={e => {
-                            setForm({...form, invoiceWeight: Number(e.target.value)});
+                            setForm({...form, invoice_weight: Number(e.target.value)});
                         }}
                     />
                 </div>
@@ -140,7 +140,7 @@ export function DeleteReceiptConfirm({ onClose, onConfirm }: ReceiptActionProps<
                 <button 
                     className="btn-modal" 
                     style={{background: '#ef4444', color: 'white', border:'none'}} 
-                    onClick={() => onConfirm()}
+                    onClick={() => onConfirm('')}
                 >
                     Excluir Definitivamente
                 </button>

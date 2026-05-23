@@ -91,9 +91,9 @@ export default function Home() {
             // Lógica de INICIAR
             if (modalAberto === 'iniciar') {
                 await ReceiptService.start(veiculoSelecionado._id, {
-                    invoiceNumber: dadosForm!.invoiceNumber,
-                    invoiceWeight: Number(dadosForm!.invoiceWeight),
-                    UserName: UserLogado
+                    invoice_number: dadosForm!.invoice_number!,
+                    invoice_weight: Number(dadosForm!.invoice_weight),
+                    user_name: UserLogado
                 });
                 // Criar notificações de sucesso.
 
@@ -101,7 +101,7 @@ export default function Home() {
             // Lógica de FINALIZAR
             else if (modalAberto === 'finalizar') {
                 await ReceiptService.finish(veiculoSelecionado._id, {
-                    scaleWeight: Number(dadosForm!.scaleWeight),
+                    scaleWeight: Number(dadosForm!.scale_weight),
                     notes: dadosForm!.notes
                 });
                 // Criar notificações de sucesso.                
@@ -113,7 +113,7 @@ export default function Home() {
             }
             else if(modalAberto === "entrada") {
                 await ReceiptService.entryByPlate(veiculoSelecionado._id, {
-                    placa: dadosForm!.licensePlate,
+                    placa: dadosForm!.license_plate!,
                 });
                 // Criar notificações de sucesso.
             }
@@ -129,12 +129,12 @@ export default function Home() {
     };
 
     const veiculosFiltrados = receipts.filter(v => {
-        const nomeFornecedor = v.supplierName || ""; 
+        const nomeFornecedor = v.supplier_name || ""; 
         const matchTexto = nomeFornecedor.toLowerCase().includes(busca.toLowerCase()) || 
-                           (v.invoiceNumber || "").includes(busca) ||
-                           (v.licensePlate || "").toLowerCase().includes(busca.toLowerCase()) ||
+                           (v.invoice_number || "").includes(busca) ||
+                           (v.license_plate || "").toLowerCase().includes(busca.toLowerCase()) ||
                            (v.status || "").includes(busca);
-        const dataParaFiltro = v.arrivalDate || v.schedulingDate || "";
+        const dataParaFiltro = v.arrival_date || v.scheduling_date || "";
         const dataV = dataParaFiltro.substring(0, 10); // Extrai apenas a parte da data (YYYY-MM-DD)
         const matchData = dataFiltro ? dataV === dataFiltro : true;
         
@@ -184,16 +184,16 @@ export default function Home() {
                                                 {v.status}
                                             </span>
                                         </td>
-                                        <td className="fw-bold">{v.supplierName || "---"}</td>
-                                        <td>{v.invoiceNumber || "-"}</td>
+                                        <td className="fw-bold">{v.supplier_name || "---"}</td>
+                                        <td>{v.invoice_number || "-"}</td>
                                         <td>
                                             <span className="plate-badge">
-                                                {v.licensePlate || "---"}
+                                                {v.license_plate || "---"}
                                             </span>
                                         </td>
                                         <td>
-                                            {v.arrivalDate 
-                                                ? new Date(v.arrivalDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
+                                            {v.arrival_date 
+                                                ? new Date(v.arrival_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
                                                 : "--:--"}
                                         </td>
                                         <td style={{textAlign: "right"}}>

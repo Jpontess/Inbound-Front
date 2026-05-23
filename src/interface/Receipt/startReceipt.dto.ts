@@ -1,5 +1,5 @@
 export class StartReceiptDto {
-    invoiceNumber!: string;
-    invoiceWeight!: number;
-    UserName!: string;
+    invoice_number!: string;
+    invoice_weight!: number;
+    user_name?: string;
 }

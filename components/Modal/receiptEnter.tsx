@@ -24,7 +24,7 @@ export default function ReceiptEnter({ onClose, onConfirm }: ReceiptEnterProps) 
         e.preventDefault();
         if (!plate) return;
 
-        onConfirm({placa: plate });
+        onConfirm({license_plate: plate });
         setPlate('');
     };
 
