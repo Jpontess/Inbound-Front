@@ -1,5 +1,5 @@
 export class Supplier{
-    _id!: string
-    name!: string
-    status!: boolean
+    id!: string
+    supplier_name!: string
+    supplier_status!: boolean
 }

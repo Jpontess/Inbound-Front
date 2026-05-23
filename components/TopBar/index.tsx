@@ -27,7 +27,7 @@ export default function Topbar() {
             {/* LADO ESQUERDO: Logo e Menu Mobile */}
             <div className="topbar__left">
                 <div className="brand-logo">
-                    <span className="brand-highlight">LIV </span> UP
+                    <span className="brand-highlight">IN</span>BOUND
                 </div>
             </div>
             <div className="topbar__right">

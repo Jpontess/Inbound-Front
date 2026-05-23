@@ -1,3 +1,3 @@
 export class SupplierDto{
-    name!: string
+    supplier_name!: string
 }

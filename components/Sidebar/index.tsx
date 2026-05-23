@@ -1,5 +1,5 @@
 import "./styles.css"
-import Logo from  "./assets/livup.png"
+import Logo from  "/logistics-delivery.png"
 import { useNavigate } from "react-router-dom"
 // import { isAuthorized } from "../../src/services/Auth/auth.payload"
 

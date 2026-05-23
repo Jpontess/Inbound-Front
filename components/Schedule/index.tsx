@@ -5,8 +5,8 @@ import { SupplierService } from "../../src/services/Supplier/supplierService";
 import type { Receipt } from "../../src/interface/Receipt/receiptDto";
 
 interface Supplier {
-    _id: string;
-    name: string;
+    id: string;
+    supplier_name: string;
 }
 
 export default function Scheduling() {
@@ -93,7 +93,7 @@ export default function Scheduling() {
    
 
     const fornecedoresFiltrados = fornecedores.filter(filtro => 
-        filtro.name.toLowerCase().includes(buscarFornecedor.toLowerCase())
+        filtro.supplier_name.toLowerCase().includes(buscarFornecedor.toLowerCase())
     );
 
     return (
@@ -184,15 +184,15 @@ export default function Scheduling() {
 
                                            {fornecedoresFiltrados.map((fornecedor) => (
                                                 <li 
-                                                    key={fornecedor._id} 
+                                                    key={fornecedor.id} 
                                                     className="autocomplete-item"
                                                     onClick={() => {
-                                                        setSelectedFornecedorId(fornecedor._id);
-                                                        setBuscarFornecedor(fornecedor.name);
+                                                        setSelectedFornecedorId(fornecedor.id);
+                                                        setBuscarFornecedor(fornecedor.supplier_name);
                                                         setMostrarLista(false);
                                                     }}
                                                 >
-                                                    {fornecedor.name}
+                                                    {fornecedor.supplier_name}
                                                 </li>
                                             ))}
                                         </ul>

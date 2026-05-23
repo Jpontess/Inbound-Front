@@ -14,7 +14,7 @@ export default function SupplierPage() {
     const [fornecedores, setFornecedores] = useState<Supplier[]>([]);
 
     const [formData, setFormData] = useState<SupplierDto>({
-        name: "", 
+        supplier_name: "", 
     });
 
     // --- CARREGAR DADOS ---
@@ -38,13 +38,13 @@ export default function SupplierPage() {
     // --- FUNÇÕES ---
     const handleOpenModal = (supplier?: Supplier) => {
         if (supplier) {
-            setEditingId(supplier._id);
+            setEditingId(supplier.id);
             setFormData({
-                name: supplier.name
+                supplier_name: supplier.supplier_name
             });
         } else {
             setEditingId(null);
-            setFormData({ name: ""});
+            setFormData({ supplier_name: ""});
         }
         setIsModalOpen(true);
     };
@@ -71,7 +71,7 @@ export default function SupplierPage() {
         if (confirm("Tem certeza que deseja excluir este fornecedor?")) {
             try {
                 await SupplierService.delete(id);
-                setFornecedores(prev => prev.filter(f => f._id !== id));
+                setFornecedores(prev => prev.filter(f => f.id !== id));
             } catch (error) {
                 console.error("Erro ao excluir:", error);
                 alert("Erro ao excluir fornecedor.");
@@ -80,8 +80,8 @@ export default function SupplierPage() {
     };
     
     const filteredSuppliers = fornecedores.filter(f => 
-        (f.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (f.status ? "ativo" : "inativo").includes(searchTerm.toLowerCase())
+        (f.supplier_name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (f.supplier_status ? "ativo" : "inativo").includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -139,18 +139,18 @@ export default function SupplierPage() {
                                     </tr>
                                 ) : (
                                     filteredSuppliers.map((f) => (
-                                        <tr key={f._id}>
+                                        <tr key={f.id}>
                                             <td>
-                                                <span className={`status-badge ${f.status ? 'status-active' : 'status-inactive'}`}>
-                                                    {f.status ? "Ativo" : "Inativo"}
+                                                <span className={`status-badge ${f.supplier_status ? 'status-active' : 'status-inactive'}`}>
+                                                    {f.supplier_status ? "Ativo" : "Inativo"}
                                                 </span>
                                             </td>
-                                            <td style={{fontWeight: 600}}>{f.name}</td>
+                                            <td style={{fontWeight: 600}}>{f.supplier_name}</td>
                                             <td style={{textAlign: "right"}}>
                                                 <button className="action-btn edit-btn" title="Editar" onClick={() => handleOpenModal(f)}>
                                                     Editar
                                                 </button>
-                                                <button className="action-btn delete-btn" title="Excluir" onClick={() => handleDelete(f._id)}>
+                                                <button className="action-btn delete-btn" title="Excluir" onClick={() => handleDelete(f.id)}>
                                                     Excluir
                                                 </button>
                                             </td>
@@ -178,8 +178,8 @@ export default function SupplierPage() {
                                     <input 
                                         className="form-input" 
                                         required 
-                                        value={formData.name}
-                                        onChange={e => setFormData({...formData, name: e.target.value})}
+                                        value={formData.supplier_name}
+                                        onChange={e => setFormData({...formData, supplier_name: e.target.value})}
                                     />
                                 </div>
                             </div>

@@ -1,5 +1,5 @@
 import './login.css'
-import logo from "../Sidebar/assets/livUpLogo.png"
+import logo from "/logistics-delivery.png"
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react';
 import { AuthService } from '../../src/services/Auth/AuthServices';
