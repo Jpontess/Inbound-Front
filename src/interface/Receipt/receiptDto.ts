@@ -2,7 +2,7 @@ import type { Supplier } from "../Supplier/supplier";
 
 export interface Receipt {
     _id?: string;
-    supplier?: Supplier; 
+    supplier_id?: Supplier; 
     supplier_name?: string
     user_name?: string;
     nomeUsuario?: string       

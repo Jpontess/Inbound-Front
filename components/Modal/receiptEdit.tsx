@@ -66,7 +66,7 @@ export default function ReceiptEdit({ data, onClose, onConfirm }: Props) {
 
                 <div className="form-group">
                     <label>Fornecedor (Apenas Leitura)</label>
-                    <input className="receipt-input" disabled value={data.supplier?.supplier_name || "---"} style={{background: '#f1f5f9'}} />
+                    <input className="receipt-input" disabled value={data.supplier_name || "---"} style={{background: '#f1f5f9'}} />
                 </div>
 
                 {/* GRIDS PARA ORGANIZAR */}

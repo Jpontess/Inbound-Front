@@ -30,8 +30,7 @@ export default function Scheduling() {
             const [dataReceipts, dataSuppliers] = await Promise.all([
                 ReceiptService.getAll(),
                 SupplierService.getAll()
-            ]);
-            
+            ]);            
             // Filtra apenas os que estão com status "Agendado"
             setAgendamentos(dataReceipts.filter((r: Receipt) => r.status === "Agendado"));
             setFornecedores(dataSuppliers);
@@ -50,20 +49,23 @@ export default function Scheduling() {
     // --- SALVAR AGENDAMENTO ---
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedFornecedorId || !novaData || novoPesoNota === "") return;
-
+        if (!selectedFornecedorId || !novaData || novoPesoNota === ""){
+            console.log(selectedFornecedorId, novaData, novoPesoNota)
+            return  
+        } ;
+        const dataFormatada = `${novaData}T12:00:00.000Z`;
         try {
             await ReceiptService.createSchedule({
-                supplier_Id: selectedFornecedorId,
-                schedulingDate: novaData,
-                invoiceWeight: Number(novoPesoNota)
+                supplier_id: selectedFornecedorId,
+                scheduling_date: dataFormatada,
+                invoice_weight: Number(novoPesoNota)
             });
 
+            console.log(handleSave)
             setSelectedFornecedorId("");
             setNovaData("");
             setNovoPesoNota("");
             loadInitialData();
-            console.log(handleSave)
         } catch (error) {
             alert("Erro ao salvar agendamento." + error);
         }
@@ -187,6 +189,7 @@ export default function Scheduling() {
                                                     key={fornecedor.id} 
                                                     className="autocomplete-item"
                                                     onClick={() => {
+                                                        console.log(fornecedor.id, fornecedor.supplier_name);
                                                         setSelectedFornecedorId(fornecedor.id);
                                                         setBuscarFornecedor(fornecedor.supplier_name);
                                                         setMostrarLista(false);

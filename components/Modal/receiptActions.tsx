@@ -69,7 +69,7 @@ export function StartReceiptForm({ onClose, onConfirm, data }: ReceiptActionProp
 // --- FORMULÁRIO DE FINALIZAR (STOP) ---
 export function FinishReceiptForm({ onClose, onConfirm }: ReceiptActionProps<FinishReceiptDto>) {
     const [form, setForm] = useState<FinishReceiptDto>({ 
-        scaleWeight: 0, 
+        scale_weight: 0, 
         notes: "" 
     });
 
@@ -86,10 +86,10 @@ export function FinishReceiptForm({ onClose, onConfirm }: ReceiptActionProps<Fin
                         className="receipt-input" 
                         type="number"
                         placeholder="Digite o peso final"
-                        value={form.scaleWeight === 0 ? "" : form.scaleWeight}
+                        value={form.scale_weight === 0 ? "" : form.scale_weight}
                         onChange={e => {
                             const val = e.target.value;
-                            setForm({...form, scaleWeight: val === "" ? 0 : Number(val)});
+                            setForm({...form, scale_weight: val === "" ? 0 : Number(val)});
                         }}
                     />
                 </div>

@@ -101,7 +101,7 @@ export default function Home() {
             // Lógica de FINALIZAR
             else if (modalAberto === 'finalizar') {
                 await ReceiptService.finish(veiculoSelecionado._id, {
-                    scaleWeight: Number(dadosForm!.scale_weight),
+                    scale_weight: Number(dadosForm!.scale_weight),
                     notes: dadosForm!.notes
                 });
                 // Criar notificações de sucesso.                
@@ -113,7 +113,7 @@ export default function Home() {
             }
             else if(modalAberto === "entrada") {
                 await ReceiptService.entryByPlate(veiculoSelecionado._id, {
-                    placa: dadosForm!.license_plate!,
+                    license_plate: dadosForm!.license_plate!,
                 });
                 // Criar notificações de sucesso.
             }

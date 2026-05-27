@@ -50,7 +50,7 @@ export const ReceiptService = {
         await api.delete(`/receipt/${id}`);
     },
 
-    entryByPlate: async (id: string, data: { placa: string }) => {
+    entryByPlate: async (id: string, data: { license_plate: string }) => {
         const response = await api.patch(`/receipt/${id}/input`, data);
         return response.data;
     }

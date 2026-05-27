@@ -1,4 +1,4 @@
 export class FinishReceiptDto {
-    scaleWeight!: number;
+    scale_weight!: number;
     notes!: string;
 }

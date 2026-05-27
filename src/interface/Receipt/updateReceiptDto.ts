@@ -1,16 +1,16 @@
 export interface UpdateReceiptDto {
-    supplier?: string 
+    supplier_id?: string 
     usuario?: string
-    licensePlate?: string
-    invoiceNumber?: string
-    invoiceWeight?:number
-    scaleWeight?: number
+    license_plate?: string
+    invoice_number?: string
+    invoice_weight?:number
+    scale_weight?: number
     notes?:string   
-    arrivalDate?: Date | null
-    endDate?: Date | null
-    startDate?: Date | null
-    waitTimeMin?: number
-    executionTimeMin?: number
-    stayTimeMin?: number
+    arrival_date?: Date | null
+    end_date?: Date | null
+    start_date?: Date | null
+    wait_time_min?: number
+    execution_time_min?: number
+    stay_time_min?: number
     status?: string
 }
